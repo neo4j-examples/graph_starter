@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    graph_starter (0.0.1)
+    graph_starter (0.1.0)
       neo4j (~> 5.2.10)
       neo4jrb-paperclip (= 0.0.3)
       paperclip (~> 4.2.0)
