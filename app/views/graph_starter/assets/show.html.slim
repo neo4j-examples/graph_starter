@@ -1,0 +1,98 @@
+
+- main_column_exists = @asset.class.has_images? && @asset.images.present? || @asset.body.present?
+- side_column_width = (main_column_exists ? 'three' : 'eight')
+- column_count = (main_column_exists ? 'three' : 'two')
+
+.ui.huge.centered.header
+  .content
+    = @asset.title
+
+.ui.grid
+  div class="#{side_column_width} wide column"
+    .ui.items
+      .item
+        .ui.statistic
+          .label
+            | Views
+          .value
+            = @asset.view_count || 0
+
+
+      - @asset.class.authorized_associations.each do |name, association|
+        - result = @asset.send(name)
+        - if result.present?
+          .item
+            .content
+              .ui.horizontal.divider = name.to_s.humanize
+              .description
+                - case association.type
+                - when :has_one
+                  - object = result
+                  i class="#{association.target_class.icon_class} icon"
+                  = link_to object.title, asset_path(object)
+                - when :has_many
+                  .ui.middle.aligned.big.divided.list
+                    - result.each do |object|
+                      .item
+                        i class="#{association.target_class.icon_class} icon"
+                        .content
+                          = link_to object.title, asset_path(object)
+
+      - recommendations = @asset.secret_sauce_recommendations
+      - if recommendations.present?
+        .item
+          .content
+            .ui.horizontal.divider Recommended
+            .description
+              .ui.middle.aligned.big.divided.list
+                - recommendations.each do |recommendation|
+                  .item data-score="#{recommendation.score}"
+                    .content = link_to recommendation.asset.title, asset_path(recommendation.asset)
+
+  - if main_column_exists
+    .ten.wide.column
+      - if @asset.body.present?
+        = @asset.body
+      - if @asset.images.present?
+        .ui.link.cards
+          - @asset.images.each do |image|
+            .card
+              .image = image_tag image.source.url, class: 'ui image tiny rounded'
+              .content
+                .header = image.title if image.title.present?
+                - if image.description.present?
+                  .meta = image.description
+              .extra.content
+                a.ui.large.green.button href="#{image.source.url}" Full Size
+
+
+  div class="#{side_column_width} wide column"
+    - if @current_user_is_admin
+      a.ui.labeled.icon.button.right.floated data-authorizable="#{@asset.to_json}"
+        | Edit Permissions
+
+    a.ui.labeled.icon.button.right.floated href="#{edit_asset_path(id: @asset)}"
+      i.edit.icon
+      | Edit
+
+    .ui.items
+      - @asset.class.authorized_properties(defined?(current_user) && current_user).each do |property|
+        - if @asset.read_attribute(property.name).present?
+          .item
+            .content
+              .ui.horizontal.divider data-authorizable="#{property.to_json}"
+                = property.name.humanize
+                - if property.private?
+                  i.red.hide.icon
+              .description
+                = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, level: 'read'}
+
+      .item
+        .content
+          .ui.horizontal.divider Created
+          .description = @asset.created_at
+
+      .item
+        .content
+          .ui.horizontal.divider Last updated
+          .description = @asset.updated_at

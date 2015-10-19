@@ -1,0 +1,28 @@
+
+- if @assets.present?
+  .ui.search
+    .ui.icon.input
+      input.prompt type="text" placeholder="Search..." style="width: 400px"
+      i.search.icon
+    .results
+
+  .ui.divider
+
+  javascript:
+    var controller = #{@model_class_scope.model_slug.to_json.html_safe}
+
+  coffee:
+    $('.ui.search').search
+      onSelect: (result, response) ->
+        window.location.replace(result.url)
+
+    $.fn.api.settings.api =
+      search: "/#{controller}/search/{query}.json"
+
+- count = @assets.size
+- total_count = @model_class_scope.count
+.stacked.segment Displaying #{[count, total_count].min} of #{number_to_human(total_count)} total
+
+.ui.divider
+
+= render partial: 'graph_starter/assets/cards', locals: {assets: @assets}

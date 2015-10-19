@@ -1,0 +1,34 @@
+- grouped_assets = assets.group_by(&:class)
+
+- grouped_assets.each do |model_class, asset_group|
+  - if grouped_assets.size > 1
+    h2 = model_class.name.pluralize.humanize
+
+  - properties = model_class.properties
+
+  .ui.link.cards
+    - asset_group.each do |asset|
+      .card
+        .content
+          - if asset.private?
+            .right.floated.meta
+              i.hide.large.red.icon
+          .header = link_to asset.title, asset_path(asset)
+        - if asset.class.has_images?
+          .image
+            - if asset.first_image_source && asset.first_image_source.url.present?
+              = image_tag asset.first_image_source.url 
+            - else
+              img src="missing"
+        - categories = Array(asset.categories).sort_by(&:name)
+        - if categories.present?
+          .content
+            - categories[0,2].each do |category|
+              .extra.content
+                i class="#{category.class.icon_class || 'folder'} icon"
+                = link_to category.name, asset_path(category)
+            - if categories.size > 2
+              .extra.content
+                i.ellipsis.horizontal.icon
+                | more categories
+

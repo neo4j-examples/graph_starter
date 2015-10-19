@@ -1,0 +1,7 @@
+#menu.ui.secondary.pointing.menu
+  - GraphStarter::Asset.descendants.each do |model_class|
+    - path = graph_starter.assets_path(model_slug: model_class.model_slug)
+    = link_to model_class.name.pluralize.humanize, path, class: "item #{'active' if request.path.match(/^#{path}/)}"
+
+  - engine_view do
+    = render 'layouts/graph_starter/custom_menu'

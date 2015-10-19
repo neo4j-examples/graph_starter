@@ -1,0 +1,17 @@
+meta name="twitter:site" content="@neo4j"
+meta name="twitter:domain" content="http://neo4j.org"
+
+- if @asset
+  /- if @asset.creators.count > 0
+  /  - # Is this the right one?  Difference between uploader and author
+  /  meta name="twitter:creator" content="@#{@asset.creators[0].twitter_username}"
+
+  - if @asset.title
+    meta name="twitter:title" content="#{@asset.title}"
+
+  meta name="twitter:description" content="#{@asset.summary}"
+
+  - if @asset.class.has_images?
+    meta name="twitter:card" content="#{(@asset.first_image_source ? 'summary_large_image' : 'summary')}"
+
+    meta name="twitter:image:src" content="#{@asset.first_image_source ? @asset.first_image_source.url : '/assets/img/neo4j/neo4j-logo.png'}"
