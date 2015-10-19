@@ -3,7 +3,6 @@ begin
 rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
-require 'bundler/gem_tasks'
 
 require 'rdoc/task'
 
