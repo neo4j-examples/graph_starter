@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 4.2.3"
-  s.add_dependency "neo4j", "~> 5.2.10"
+  s.add_dependency "neo4j", "~> 6.0.0.alpha"
   s.add_dependency "semantic-ui-sass", "~> 2.1.3.0"
   s.add_dependency "slim-rails", "~> 3.0.1"
   s.add_dependency "paperclip", "~> 4.2.0"
