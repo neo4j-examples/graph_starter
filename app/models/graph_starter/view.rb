@@ -1,3 +1,5 @@
+require 'graph_starter/ip_address_validator'
+
 module GraphStarter
   class View
     include Neo4j::ActiveRel
