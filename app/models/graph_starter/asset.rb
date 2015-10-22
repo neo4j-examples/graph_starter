@@ -37,8 +37,8 @@ module GraphStarter
       GraphStarter::Asset::IMAGE_MODELS.include?(self)
     end
 
-    def first_image_source
-      images.first && images.first.source
+    def first_image_source_url
+      images.first && images.first.source_url
     end 
 
     def self.category_association

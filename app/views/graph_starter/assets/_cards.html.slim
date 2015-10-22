@@ -16,8 +16,8 @@
           .header = link_to asset.title, asset_path(asset)
         - if asset.class.has_images?
           .image
-            - if asset.first_image_source && asset.first_image_source.url.present?
-              = image_tag asset.first_image_source.url 
+            - if asset.first_image_source_url.present?
+              = image_tag asset.first_image_source_url
             - else
               img src="missing"
         - categories = Array(asset.categories).sort_by(&:name)

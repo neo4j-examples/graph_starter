@@ -57,13 +57,13 @@
         .ui.link.cards
           - @asset.images.each do |image|
             .card
-              .image = image_tag image.source.url, class: 'ui image tiny rounded'
+              .image = image_tag image.source_url, class: 'ui image tiny rounded'
               .content
                 .header = image.title if image.title.present?
                 - if image.description.present?
                   .meta = image.description
               .extra.content
-                a.ui.large.green.button href="#{image.source.url}" Full Size
+                a.ui.large.green.button href="#{image.source_url}" Full Size
 
 
   div class="#{side_column_width} wide column"

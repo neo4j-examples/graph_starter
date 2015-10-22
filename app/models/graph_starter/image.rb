@@ -12,5 +12,9 @@ module GraphStarter
 
     has_neo4jrb_attached_file :source
     validates_attachment_content_type :source, content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+
+    def source_url
+      source.present? ? source.url : original_url
+    end
   end
 end
