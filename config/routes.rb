@@ -1,5 +1,6 @@
 GraphStarter::Engine.routes.draw do
   resources :groups
+
   root 'assets#home'
 
   resources :categories
@@ -19,6 +20,7 @@ GraphStarter::Engine.routes.draw do
   get ':model_slug' => 'assets#index', as: :assets
   get ':model_slug/:id' => 'assets#show', as: :asset
   get ':model_slug/:id/edit' => 'assets#edit', as: :edit_asset
+  put ':model_slug/:id/rate/:new_rating' => 'assets#rate', as: :rate_asset
   get ':model_slug/search/:query.json' => 'assets#search', as: :search_assets
-  patch ':model_slug/:id' => 'assets#update'  
+  patch ':model_slug/:id' => 'assets#update'
 end

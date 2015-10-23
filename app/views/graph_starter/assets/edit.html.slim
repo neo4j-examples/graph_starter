@@ -2,23 +2,21 @@
 = stylesheet_link_tag    'jquery.datetimepicker', media: 'all', 'data-turbolinks-track' => true
 
 
+h1 = @asset.name
+
 = form_for @asset, url: url_for(action: :update), html: {class: 'ui form'} do |f|
-  .field
-    label Title
 
-    = f.text_field :title
+  = image_tag @asset.first_image_source_url, class: 'ui medium image'
+  /.field
+  /  label Image
 
-  = image_tag @asset.image.url, class: 'ui medium image'
-  .field
-    label Image
-
-    = f.file_field :image
+  /  = f.file_field :image
 
   - @asset.class.authorized_properties_and_levels(current_user).each do |property, level|
     .field
       label = property.name.humanize
 
-      = render partial: 'properties/property', locals: {property: property, asset: @asset, level: level, form: f}
+      = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, level: level, form: f}
 
 
   = f.submit 'Update', class: 'ui button'

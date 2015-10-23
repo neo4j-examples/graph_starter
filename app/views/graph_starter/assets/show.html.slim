@@ -1,4 +1,8 @@
 
+javascript:
+  var asset_id = '#{@asset.id}';
+  var model_slug = '#{@asset.class.model_slug}';
+
 - main_column_exists = @asset.class.has_images? && @asset.images.present? || @asset.body.present?
 - side_column_width = (main_column_exists ? 'three' : 'eight')
 - column_count = (main_column_exists ? 'three' : 'two')
@@ -66,7 +70,7 @@
                 a.ui.large.green.button href="#{image.source_url}" Full Size
 
 
-  div class="#{side_column_width} wide column"
+  div class="#{side_column_width} wide column" id="right-column"
     - if @current_user_is_admin
       a.ui.labeled.icon.button.right.floated data-authorizable="#{@asset.to_json}"
         | Edit Permissions
@@ -76,6 +80,20 @@
       | Edit
 
     .ui.items
+      - if @asset.class.rated? && defined?(current_user) && current_user
+        .item
+          .content
+            .ui.horizontal.divider Rating
+            .description
+              .ui.star.rating data-max-rating="5" data-rating="#{@asset.rating_level_for(current_user)}"
+              coffee:
+                $('#right-column .ui.rating').rating
+                  onRate: (new_rating) ->
+                    $.ajax
+                      method: 'PUT'
+                      url: "/#{model_slug}/#{asset_id}/rate/#{new_rating}"
+
+
       - @asset.class.authorized_properties(defined?(current_user) && current_user).each do |property|
         - if @asset.read_attribute(property.name).present?
           .item

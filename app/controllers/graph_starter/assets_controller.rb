@@ -57,6 +57,19 @@ module GraphStarter
       redirect_to action: :edit
     end
 
+    def rate
+      if current_user
+        rating = asset.rating_for(current_user)
+        rating ||= Rating.find(from_node: current_user, to_node: asset)
+
+        rating.update_attribute(:level, params[:new_rating])
+
+        render json: rating
+      else
+        render json: {}
+      end
+    end
+
     def asset
       model_class_scope.find(params[:id])
     end

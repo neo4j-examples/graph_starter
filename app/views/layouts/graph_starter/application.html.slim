@@ -17,7 +17,7 @@ html
     - controller = params[:controller].to_sym
 
     - if ![:users, :groups].include?(controller)
-      = javascript_include_tag 'ember_apps/permissions_modal', 'data-turbolinks-track' => true
+      = javascript_include_tag 'graph_starter/ember_apps/permissions_modal', 'data-turbolinks-track' => true
 
     = csrf_meta_tags
 

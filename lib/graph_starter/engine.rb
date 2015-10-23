@@ -18,8 +18,8 @@ module GraphStarter
     config.assets.precompile += %w(
       missing.png
 
-      ember_apps/permissions_modal.js
-      ember_apps/user_list_dropdown.js
+      graph_starter/ember_apps/permissions_modal.js
+      graph_starter/ember_apps/user_list_dropdown.js
     )
   end
 end

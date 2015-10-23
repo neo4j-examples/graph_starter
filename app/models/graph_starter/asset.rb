@@ -9,44 +9,49 @@ module GraphStarter
 
     include Authorizable
 
-    property :title
-    validates :title, presence: true
-
     property :summary
 
     property :view_count, type: Integer
 
     property :private, type: Boolean, default: false
 
-    #has_many :in, :creators, type: :CREATED, model_class: :User
 
-    has_many :in, :viewers, rel_class: :View, model_class: :User
+    if GraphStarter.configuration.user_class
+      #has_many :in, :creators, type: :CREATED, model_class: GraphStarter.configuration.user_class
+
+      has_many :in, :viewers, rel_class: :View, model_class: GraphStarter.configuration.user_class
+
+      has_many :in, :rated_by_user, rel_class: :'GraphStarter::Rating', model_class: GraphStarter.configuration.user_class
+    end
+
 
     SecretSauceRecommendation = Struct.new(:asset, :score)
 
     def body
     end
 
-    IMAGE_MODELS = []
     def self.has_images
-      GraphStarter::Asset::IMAGE_MODELS << self
+      @has_images = true
       has_many :out, :images, type: :HAS_IMAGE, model_class: '::GraphStarter::Image'
     end
 
     def self.has_images?
-      GraphStarter::Asset::IMAGE_MODELS.include?(self)
+      !!@has_images
     end
 
     def first_image_source_url
       images.first && images.first.source_url
     end 
 
-    def self.category_association
-      @category_association
-    end
-
-    def self.category_association=(association_name)
-      @category_association = association_name
+    def self.category_association(association_name = nil)
+      if association_name.nil?
+        @category_association
+      else
+        fail "Cannot declare category_association twice" if @category_association.present?
+        name = association_name.to_sym
+        fail ArgumentError, "Association #{name} is not defined" if associations[name].nil?
+        @category_association = name
+      end
     end
 
     def categories
@@ -58,17 +63,75 @@ module GraphStarter
     end
 
 
+    def self.rated
+      @rated = true
+    end
+
+    def self.rated?
+      !!@rated
+    end
+
+
+    def self.name_property(property_name = nil)
+      if property_name.nil?
+        name_property(default_name_property) if @name_property.nil?
+
+        @name_property
+      else
+        fail "Cannot declare name_property twice" if @name_property.present?
+        name = property_name.to_sym
+        fail ArgumentError, "Property #{name} is not defined" if attributes[name.to_s].nil?
+        @name_property = name
+
+        validates name, presence: true
+      end
+    end
+
+    def self.default_name_property
+      (%w(name title) & attributes.keys)[0].tap do |property|
+        if property.nil?
+          fail "No name_property defined for #{self.name}!"
+        end
+      end
+    end
+
+    def rating_level_for(user)
+      rating = rating_for(user)
+      rating && rating.level
+    end
+
+    def rating_for(user)
+      rated_by_user(nil, :rating).where(uuid: user.uuid).pluck(:rating)[0]
+    end
+
+    def method_missing(method_name, *args, &block)
+      if [:name, :title].include?(method_name.to_sym)
+        self.class.send(:define_method, method_name) do
+          read_attribute(self.class.name_property)
+        end
+
+        send(method_name)
+      else
+        super
+      end
+    end
+
+
     def self.for_query(query)
       all.where(title: /.*#{query}.*/i)
     end
 
     def secret_sauce_recommendations
+      user_class = GraphStarter.configuration.user_class
+      user_class = (user_class.is_a?(Class) ? user_class : user_class.to_s.constantize)
+      user_label = user_class.mapped_label_name
+
       query_as(:source)
         .match('source-[:HAS_CATEGORY]->(category:Category)<-[:HAS_CATEGORY]-(asset:Asset)')
         .break
-        .optional_match('source<-[:CREATED]-(creator:User)-[:CREATED]->asset')
+        .optional_match("source<-[:CREATED]-(creator:#{user_label})-[:CREATED]->asset")
         .break
-        .optional_match('source<-[:VIEWED]-(viewer:User)-[:VIEWED]->asset')
+        .optional_match("source<-[:VIEWED]-(viewer:#{user_label})-[:VIEWED]->asset")
         .limit(5)
         .order('score DESC')
         .pluck(
@@ -110,10 +173,17 @@ module GraphStarter
     def self.authorized_for(user)
       require 'graph_starter/query_authorizer'
 
-      ::GraphStarter::QueryAuthorizer.new(all(:asset).categories(:category, nil, optional: true))
-        .authorized_query([:asset, :category], user)
-        .with('DISTINCT asset AS asset')
-        .proxy_as(self, :asset)
+      if category_association
+        ::GraphStarter::QueryAuthorizer.new(all(:asset).send(category_association, :category, nil, optional: true))
+          .authorized_query([:asset, :category], user)
+          .with('DISTINCT asset AS asset')
+          .proxy_as(self, :asset)
+      else
+        ::GraphStarter::QueryAuthorizer.new(all(:asset))
+          .authorized_query(:asset, user)
+          .with('DISTINCT asset AS asset')
+          .proxy_as(self, :asset)
+      end
     end
 
     def self.authorized_properties(user)
