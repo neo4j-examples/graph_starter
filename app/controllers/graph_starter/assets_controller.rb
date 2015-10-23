@@ -8,31 +8,41 @@ module GraphStarter
     end
 
     def search
-      regexp = Regexp.new('.*' + params[:query].gsub(/\s+/, '.*') + '.*', 'i')
-      assets = asset_set { |scope| scope.where(title: regexp) }
+      assets = asset_set { |scope| scope.for_query(params[:query]) }
       results_data = assets.map do |asset|
+        description = model_class.search_properties.map do |property|
+          "<b>#{property.to_s.humanize}:</b> #{asset.read_attribute(property)}"
+        end.join("<br>")
+
         {
           title: asset.title,
           url: asset_path(id: asset, model_slug: asset.class.model_slug),
-          image: images? && asset.first_image_source && asset.first_image_source.url || nil
-        }.reject {|_, v| v.nil? }
+          description: description,
+          image: images? && asset.first_image_source_url || nil
+        }.reject {|_, v| v.nil? }.tap do |result|
+          model_class.search_properties.each do |property|
+            result[property] = asset.read_attribute(property)
+          end
+        end
       end
+
+      # INCLUDE SEARCH QUERY PROPERTIES IN RESULT!!!
 
       render json: {results: results_data}.to_json
     end
 
-    def asset_set
+    def asset_set(var = :asset)
       associations = []
       associations << :images if images?
       associations << model_class.category_association if model_class.category_association
 
-      scope = model_class_scope
+      scope = model_class_scope(var)
       scope = yield scope if block_given?
 
       scope = scope.limit(50)
 
       if associations.present?
-        scope.query_as(:s).with(:s).proxy_as(model_class_scope.model, :s).with_associations(*associations)
+        scope.query_as(var).with(var).proxy_as(model_class, var).with_associations(*associations)
       else
         scope
       end
@@ -78,12 +88,14 @@ module GraphStarter
       model_class_scope.has_images?
     end
 
-    def model_class_scope
-      @model_class_scope = if defined?(current_user)
-        model_class.authorized_for(current_user)
-      else
-        model_class.all
-      end
+    def model_class_scope(var = :asset)
+      #@model_class_scope = if defined?(current_user)
+      #  model_class.authorized_for(current_user)
+      #else
+      #  model_class.all(var)
+      #end
+
+      @model_class_scope ||= model_class.all(var)
     end
   end
 end

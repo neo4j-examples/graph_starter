@@ -9,7 +9,7 @@
   .ui.divider
 
   javascript:
-    var controller = #{@model_class_scope.model_slug.to_json.html_safe}
+    var controller = #{@model_slug.to_json.html_safe}
 
   coffee:
     $('.ui.search').search

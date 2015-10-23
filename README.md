@@ -85,6 +85,12 @@ Models inheriting from `GraphStarter::Asset` are simply ActiveNode models, thus 
 
 Your asset models need to have a property which is defined as the "name property".  This is what is used to describe the asset in the UI.  By default if you define a `name` property or a `title` property then they will be used automatically.  Otherwise you should call `name_property :property_name` on your model to specify which property should represent the model.
 
+### search_properties
+
+The GraphStarter UI has search fields.  By default these searches are done on the name_property field, but you can specify a list of properties that you'd like to use:
+
+    search_properties :title, :name, :description
+
 ### category_association
 
 If you would like for your asset model to be categorized by another asset model, you can call `category_association :association_name` on your model to define it.  This will display the categories for your asset in the UI appropriately.  For example:

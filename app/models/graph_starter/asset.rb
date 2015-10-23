@@ -117,8 +117,22 @@ module GraphStarter
     end
 
 
+    def self.search_properties(*array)
+      if array.empty?
+        @search_properties || [name_property]
+      else
+        @search_properties = array
+      end
+    end
+
     def self.for_query(query)
-      all.where(title: /.*#{query}.*/i)
+      where_clause = self.search_properties.map do |property|
+        fail "Invalid property: #{property}" if attributes[property].nil?
+        "asset.#{property} =~ {query}"
+      end.join(' OR ')
+
+      query_string = query.strip.gsub(/\s+/, '.*')
+      all(:asset).where(where_clause).params(query: "(?i).*#{query_string}.*")
     end
 
     def secret_sauce_recommendations
