@@ -114,8 +114,25 @@ If you call `has_images` in your model a `has_many` association called `images` 
 
 `GraphStarter::Image` objects (which the association represents) have the following properties: `title`, `description`, `details` (serialized object), `original_url`, and a paperclip property called `source`.  Refer to the [paperclip documentation](https://github.com/thoughtbot/paperclip)
 
-# rated
+### rated
 
 Allows users to rate assets.  A 5-star rating UI will appear on the asset's `show` page.  Ratings are stored as an integer from 1 to 5 on the `RATES` relationship.  This relationship is represented by the `GraphStarter::Rating` `ActiveRel` model.
 
     YourAssetModel.rated?
+
+# Controllers
+
+### @title
+
+Set the @title instance variable in your controller to determine the title of the HTML page.  Defaults to your application's name
+
+### current_user
+
+Define a `current_user` method to return the currently authenticated user.  Setup automatically if you use devise
+
+# Helpers
+
+### current_user
+
+Define a `current_user` method to return the currently authenticated user.  Setup automatically if you use devise
+
