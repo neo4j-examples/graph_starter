@@ -84,6 +84,7 @@ module GraphStarter
         @name_property = name
 
         validates name, presence: true
+        index name
       end
     end
 
