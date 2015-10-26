@@ -3,7 +3,7 @@ doctype html
 html
 
   head
-    title AssetPortal
+    title = @title || Rails.application.class.to_s.split("::").first.tableize.singularize.humanize
     = stylesheet_link_tag    'graph_starter/application', media: 'all', 'data-turbolinks-track' => true
 
     = render partial: 'layouts/graph_starter/twitter_meta_tags'
