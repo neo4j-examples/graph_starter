@@ -5,8 +5,8 @@ module GraphStarter
 
     include Authorizable
 
-    property :name
-    property :ruby_type
+    property :name, index: :exact
+    property :ruby_type, index: :exact
     property :created_at
     property :updated_at
 
