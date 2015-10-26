@@ -10,7 +10,7 @@ module GraphStarter
     creates_unique
 
     property :level, type: Integer
-    validates :level, inclusion: {in: 1..5}
+    validates :level, inclusion: {in: (1..5).to_a + [nil]}
 
     property :rated_at
 

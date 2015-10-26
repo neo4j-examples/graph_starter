@@ -70,9 +70,11 @@ module GraphStarter
     def rate
       if current_user
         rating = asset.rating_for(current_user)
-        rating ||= Rating.find(from_node: current_user, to_node: asset)
+        rating ||= Rating.create(from_node: current_user, to_node: asset)
 
-        rating.update_attribute(:level, params[:new_rating])
+        new_rating = params[:new_rating].to_i
+        new_rating = nil if new_rating.zero?
+        rating.update_attribute(:level, new_rating)
 
         render json: rating
       else

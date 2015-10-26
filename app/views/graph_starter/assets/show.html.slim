@@ -88,6 +88,7 @@ javascript:
               .ui.star.rating data-max-rating="5" data-rating="#{@asset.rating_level_for(current_user)}"
               coffee:
                 $('#right-column .ui.rating').rating
+                  clearable: true
                   onRate: (new_rating) ->
                     $.ajax
                       method: 'PUT'
