@@ -13,9 +13,6 @@ module GraphStarter
 
     property :view_count, type: Integer
 
-    property :private, type: Boolean, default: false
-
-
     if GraphStarter.configuration.user_class
       #has_many :in, :creators, type: :CREATED, model_class: GraphStarter.configuration.user_class
 
@@ -27,12 +24,14 @@ module GraphStarter
 
     SecretSauceRecommendation = Struct.new(:asset, :score)
 
-    def body
-    end
-
     def self.has_images
       @has_images = true
       has_many :out, :images, type: :HAS_IMAGE, model_class: '::GraphStarter::Image'
+      has_one :out, :image, type: :HAS_IMAGE, model_class: '::GraphStarter::Image'
+    end
+
+    def self.has_image
+      has_images
     end
 
     def self.has_images?
@@ -40,7 +39,7 @@ module GraphStarter
     end
 
     def first_image_source_url
-      images.first && images.first.source_url
+      image && image.source_url
     end 
 
     def self.category_association(association_name = nil)
@@ -80,12 +79,16 @@ module GraphStarter
       else
         fail "Cannot declare name_property twice" if @name_property.present?
         name = property_name.to_sym
-        fail ArgumentError, "Property #{name} is not defined" if attributes[name.to_s].nil?
+        fail ArgumentError, "Property #{name} is not defined" if !attributes.key?(name.to_s)
         @name_property = name
 
         validates name, presence: true
         index name
       end
+    end
+
+    def self.name_property?(property_name)
+      @name_property && @name_property.to_sym == property_name.to_sym
     end
 
     def self.default_name_property
@@ -95,6 +98,46 @@ module GraphStarter
         end
       end
     end
+
+
+    def self.body_property(property_name = nil)
+      if property_name.nil?
+        body_property(default_name_property) if @body_property.nil?
+
+        @body_property
+      else
+        fail "Cannot declare body_property twice" if @body_property.present?
+        name = property_name.to_sym
+        fail ArgumentError, "Property #{name} is not defined" if !attributes.key?(name.to_s)
+        @body_property = name
+      end
+    end
+
+    def self.body_property?(property_name)
+      @body_property && @body_property.to_sym == property_name.to_sym
+    end
+
+    def self.default_body_property
+      if @body_property.nil? && !attributes.key?('body')
+        fail "No body_property defined for #{self.name}!"
+      end
+
+      body_property || 'body'
+    end
+
+
+    def self.display_properties(*property_names)
+      if property_names.empty?
+        @display_properties || []
+      else
+        @display_properties = property_names.map(&:to_sym)
+      end
+    end
+
+    def self.display_property?(property_name)
+      display_properties.include?(property_name.to_sym)
+    end
+
 
     def rating_level_for(user)
       rating = rating_for(user)
@@ -109,6 +152,12 @@ module GraphStarter
       if [:name, :title].include?(method_name.to_sym)
         self.class.send(:define_method, method_name) do
           read_attribute(self.class.name_property)
+        end
+
+        send(method_name)
+      elsif method_name.to_sym == :body
+        self.class.send(:define_method, method_name) do
+          read_attribute(self.class.body_property)
         end
 
         send(method_name)
@@ -138,6 +187,8 @@ module GraphStarter
 
     def secret_sauce_recommendations
       user_class = GraphStarter.configuration.user_class
+      return [] if user_class.nil? # Should fix this later
+
       user_class = (user_class.is_a?(Class) ? user_class : user_class.to_s.constantize)
       user_label = user_class.mapped_label_name
 
@@ -225,7 +276,9 @@ module GraphStarter
 
     def self.property_name_and_uuid_and_ruby_type_query
       properties_and_uuids_and_ruby_types = properties.map do |property|
-        [property, SecureRandom.uuid, self.attributes[property][:type]]
+        type = self.attributes[property][:type]
+        type = type.name if type.is_a?(Class)
+        [property, SecureRandom.uuid, type]
       end
 
       Neo4j::Session.current.query
@@ -236,7 +289,7 @@ module GraphStarter
     end
 
     def self.authorized_associations
-      associations.except(*Asset.associations.keys + [:images])
+      associations.except(*Asset.associations.keys + [:images, :image])
     end
 
     def self.icon_class

@@ -102,7 +102,7 @@ If you would like for your asset model to be categorized by another asset model,
       category_association :departments
     end
 
-### has_images
+### has_images / has_image
 
 If you call `has_images` in your model a `has_many` association called `images` will be defined on your model which will allow you to use the following methods:
 
@@ -113,6 +113,8 @@ If you call `has_images` in your model a `has_many` association called `images` 
     asset_object.first_image_source_url
 
 `GraphStarter::Image` objects (which the association represents) have the following properties: `title`, `description`, `details` (serialized object), `original_url`, and a paperclip property called `source`.  Refer to the [paperclip documentation](https://github.com/thoughtbot/paperclip)
+
+`has_image` works the same as `has_images` except that it creates a `has_one` association called `image`
 
 ### rated
 
@@ -136,3 +138,10 @@ Define a `current_user` method to return the currently authenticated user.  Setu
 
 Define a `current_user` method to return the currently authenticated user.  Setup automatically if you use devise
 
+# Views
+
+## Body
+
+To overwrite the center panel of the display page for an asset, define a view in `app/views/<model_slug>/body.html.(erb|slim|haml)`.  The asset object is available via the `asset` variable.
+
+For example if you had a `Product` model, products would be displayed at the URL `/products/<product ID>` and so you could define a view at `app/views/products/body.html.(erb|slim|haml)` to change what is displayed.

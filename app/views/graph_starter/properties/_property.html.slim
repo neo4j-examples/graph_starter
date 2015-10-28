@@ -1,12 +1,14 @@
 - can_write = (level == 'write') && !form.nil?
 
+- value = asset.read_attribute(property.name)
+
 - ruby_type = property.ruby_type.to_s
 - case ruby_type
 - when 'Integer'
   - if can_write
     = form.number_field property.name
   - else
-    = asset.read_attribute(property.name)
+    = value
 - when 'DateTime', 'Date'
   - if can_write
     i.calendar.icon
@@ -15,7 +17,6 @@
     - strftime_format = {'DateTime' => '%Y-%m-%d %H:%M', 'Date' => '%Y-%m-%d'}[ruby_type]
 
     - id = SecureRandom.uuid
-    - value = asset.read_attribute(property.name)
 
     = form.text_field property.name, value: value && value.strftime(strftime_format), id: id
 
@@ -25,10 +26,13 @@
         $('##{id}').datetimepicker({#{js_options.html_safe}});
       });
   - else
-    = asset.read_attribute(property.name)
+    = value
 
 - else
   - if can_write
     = form.text_field property.name
   - else
-    = asset.read_attribute(property.name)
+    - if property.name.to_s.match(/url$/i)
+      = link_to value, value
+    - else
+      = value

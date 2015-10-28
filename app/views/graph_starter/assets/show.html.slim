@@ -55,29 +55,17 @@ javascript:
 
   - if main_column_exists
     .ten.wide.column
-      - if @asset.body.present?
-        = @asset.body
-      - if @asset.images.present?
-        .ui.link.cards
-          - @asset.images.each do |image|
-            .card
-              .image = image_tag image.source_url, class: 'ui image tiny rounded'
-              .content
-                .header = image.title if image.title.present?
-                - if image.description.present?
-                  .meta = image.description
-              .extra.content
-                a.ui.large.green.button href="#{image.source_url}" Full Size
-
+      = render_body
 
   div class="#{side_column_width} wide column" id="right-column"
     - if @current_user_is_admin
       a.ui.labeled.icon.button.right.floated data-authorizable="#{@asset.to_json}"
         | Edit Permissions
 
-    a.ui.labeled.icon.button.right.floated href="#{edit_asset_path(id: @asset)}"
-      i.edit.icon
-      | Edit
+    - if @current_user_is_admin
+      a.ui.labeled.icon.button.right.floated href="#{edit_asset_path(id: @asset)}"
+        i.edit.icon
+        | Edit
 
     .ui.items
       - if @asset.class.rated? && defined?(current_user) && current_user
@@ -96,6 +84,9 @@ javascript:
 
 
       - @asset.class.authorized_properties(defined?(current_user) && current_user).each do |property|
+        - next if !@asset.class.display_property?(property.name)
+        - next if @asset.class.name_property?(property.name) || @asset.class.body_property?(property.name)
+
         - if @asset.read_attribute(property.name).present?
           .item
             .content
@@ -106,12 +97,14 @@ javascript:
               .description
                 = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, level: 'read'}
 
-      .item
-        .content
-          .ui.horizontal.divider Created
-          .description = @asset.created_at
+      - if @asset.class.display_property?(:created_at)
+        .item
+          .content
+            .ui.horizontal.divider Created
+            .description = @asset.created_at
 
-      .item
-        .content
-          .ui.horizontal.divider Last updated
-          .description = @asset.updated_at
+      - if @asset.class.display_property?(:updated_at)
+        .item
+          .content
+            .ui.horizontal.divider Last updated
+            .description = @asset.updated_at
