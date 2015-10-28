@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    graph_starter (0.4.4)
+    graph_starter (0.5.0)
       neo4j (~> 6.0.0.alpha)
       neo4jrb-paperclip (= 0.0.3)
       paperclip (~> 4.2.0)
@@ -79,15 +79,15 @@ GEM
       mime-types (>= 1.16, < 3)
     mime-types (2.6.2)
     mini_portile (0.6.2)
-    minitest (5.8.1)
+    minitest (5.8.2)
     multi_json (1.11.2)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
-    neo4j (6.0.0.alpha.8)
+    neo4j (6.0.0.alpha.9)
       active_attr (~> 0.8)
       activemodel (~> 4)
       activesupport (~> 4)
-      neo4j-core (~> 6.0.0.alpha.1)
+      neo4j-core (~> 6.0.0.alpha.5)
       orm_adapter (~> 0.5.0)
     neo4j-core (6.0.0.alpha.5)
       activesupport
