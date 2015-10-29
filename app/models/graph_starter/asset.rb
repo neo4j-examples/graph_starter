@@ -293,7 +293,7 @@ module GraphStarter
     end
 
     def self.icon_class
-      'bookmark'
+      GraphStarter.configuration.icon_classes[self.name.to_sym]
     end
   end
 end
