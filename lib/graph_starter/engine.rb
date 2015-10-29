@@ -12,6 +12,7 @@ module GraphStarter
     isolate_namespace GraphStarter
 
     config.autoload_paths << File.expand_path("../../", __FILE__)
+    config.autoload_paths << File.expand_path("../../../app/presenters", __FILE__)
 
     config.neo4j._active_record_destroyed_behavior = true
 

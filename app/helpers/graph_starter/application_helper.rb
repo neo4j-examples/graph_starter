@@ -8,12 +8,20 @@ module GraphStarter
        yield eval("__FILE__.gsub(Rails.root.to_s, GraphStarter::Engine.root.to_s)",b.binding) 
     end
 
-    def render_body
-      views = Dir.glob(Rails.root.join("app/views/#{@model_slug}/_body.html.*"))
+    def render_body(asset, model_slug)
+      views = Dir.glob(Rails.root.join("app/views/#{model_slug}/_body.html.*"))
 
-      partial_path = views.present? ? "#{@model_slug}/body" : 'body'
+      partial_path = views.present? ? "#{model_slug}/body" : 'body'
 
-      render partial: partial_path, locals: {asset: @asset}
+      render partial: partial_path, locals: {asset: asset}
+    end
+
+    def config
+      GraphStarter::CONFIG
+    end
+
+    def present_asset(object)
+      yield(AssetPresenter.new(object, self)) if block_given?
     end
   end
 end

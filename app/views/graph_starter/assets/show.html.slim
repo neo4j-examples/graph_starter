@@ -3,108 +3,26 @@ javascript:
   var asset_id = '#{@asset.id}';
   var model_slug = '#{@asset.class.model_slug}';
 
-- main_column_exists = @asset.class.has_images? && @asset.images.present? || @asset.body.present?
-- side_column_width = (main_column_exists ? 'three' : 'eight')
-- column_count = (main_column_exists ? 'three' : 'two')
-
-.ui.huge.centered.header
-  .content
-    = @asset.title
-
-.ui.grid
-  div class="#{side_column_width} wide column"
-    .ui.items
-      .item
-        .ui.statistic
-          .label
-            | Views
-          .value
-            = @asset.view_count || 0
+- present_asset(@asset) do |asset_presenter|
+  .ui.huge.centered.header
+    .content
+      = @asset.title
 
 
-      - @asset.class.authorized_associations.each do |name, association|
-        - result = @asset.send(name)
-        - if result.present?
-          .item
-            .content
-              .ui.horizontal.divider = name.to_s.humanize
-              .description
-                - case association.type
-                - when :has_one
-                  - object = result
-                  i class="#{association.target_class.icon_class} icon"
-                  = link_to object.title, asset_path(object)
-                - when :has_many
-                  .ui.middle.aligned.big.divided.list
-                    - result.each do |object|
-                      .item
-                        i class="#{association.target_class.icon_class} icon"
-                        .content
-                          = link_to object.title, asset_path(object)
+  - left_width, center_width, right_width = asset_presenter.display_column_widths
 
-      - recommendations = @asset.secret_sauce_recommendations
-      - if recommendations.present?
-        .item
-          .content
-            .ui.horizontal.divider Recommended
-            .description
-              .ui.middle.aligned.big.divided.list
-                - recommendations.each do |recommendation|
-                  .item data-score="#{recommendation.score}"
-                    .content = link_to recommendation.asset.title, asset_path(recommendation.asset)
+  .ui.grid
+    - if asset_presenter.left_sidebar_exists?
+      div class="#{left_width} wide column"
+        = render partial: 'dynamic_items', locals: {asset: @asset}
 
-  - if main_column_exists
-    .ten.wide.column
-      = render_body
+    - if asset_presenter.main_column_exists?
+      div class="#{center_width} wide column"
+        = render_body(@asset, @model_slug)
 
-  div class="#{side_column_width} wide column" id="right-column"
-    - if @current_user_is_admin
-      a.ui.labeled.icon.button.right.floated data-authorizable="#{@asset.to_json}"
-        | Edit Permissions
+    div class="#{right_width} wide column" id="right-column"
+      - if !asset_presenter.left_sidebar_exists?
+        = render partial: 'dynamic_items', locals: {asset: @asset}
 
-    - if @current_user_is_admin
-      a.ui.labeled.icon.button.right.floated href="#{edit_asset_path(id: @asset)}"
-        i.edit.icon
-        | Edit
+      = render partial: 'property_items', locals: {asset: @asset}
 
-    .ui.items
-      - if @asset.class.rated? && defined?(current_user) && current_user
-        .item
-          .content
-            .ui.horizontal.divider Rating
-            .description
-              .ui.star.rating data-max-rating="5" data-rating="#{@asset.rating_level_for(current_user)}"
-              coffee:
-                $('#right-column .ui.rating').rating
-                  clearable: true
-                  onRate: (new_rating) ->
-                    $.ajax
-                      method: 'PUT'
-                      url: "/#{model_slug}/#{asset_id}/rate/#{new_rating}"
-
-
-      - @asset.class.authorized_properties(defined?(current_user) && current_user).each do |property|
-        - next if !@asset.class.display_property?(property.name)
-        - next if @asset.class.name_property?(property.name) || @asset.class.body_property?(property.name)
-
-        - if @asset.read_attribute(property.name).present?
-          .item
-            .content
-              .ui.horizontal.divider data-authorizable="#{property.to_json}"
-                = property.name.humanize
-                - if property.private?
-                  i.red.hide.icon
-              .description
-                = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, level: 'read'}
-
-      - if @asset.class.display_property?(:created_at)
-        .item
-          .content
-            .ui.horizontal.divider Created
-            .description = @asset.created_at
-
-      - if @asset.class.display_property?(:updated_at)
-        .item
-          .content
-            .ui.horizontal.divider Last updated
-            .description = @asset.updated_at

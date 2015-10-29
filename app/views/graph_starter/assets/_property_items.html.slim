@@ -1,0 +1,51 @@
+- if @current_user_is_admin
+  a.ui.labeled.icon.button.right.floated data-authorizable="#{asset.to_json}"
+    | Edit Permissions
+
+- if @current_user_is_admin
+  a.ui.labeled.icon.button.right.floated href="#{edit_asset_path(id: asset)}"
+    i.edit.icon
+    | Edit
+
+.ui.items
+  - if asset.class.rated? && defined?(current_user) && current_user
+    .item
+      .content
+        .ui.horizontal.divider Rating
+        .description
+          .ui.star.rating data-max-rating="5" data-rating="#{asset.rating_level_for(current_user)}"
+          coffee:
+            $('#right-column .ui.rating').rating
+              clearable: true
+              onRate: (new_rating) ->
+                $.ajax
+                  method: 'PUT'
+                  url: "/#{model_slug}/#{asset_id}/rate/#{new_rating}"
+
+
+  - asset.class.authorized_properties(defined?(current_user) && current_user).each do |property|
+    - next if !asset.class.display_property?(property.name)
+    - next if asset.class.name_property?(property.name) || asset.class.body_property?(property.name)
+
+    - if asset.read_attribute(property.name).present?
+      .item
+        .content
+          .ui.horizontal.divider data-authorizable="#{property.to_json}"
+            = property.name.humanize
+            - if property.private?
+              i.red.hide.icon
+          .description
+            = render partial: 'graph_starter/properties/property', locals: {property: property, asset: asset, level: 'read'}
+
+  - if asset.class.display_property?(:created_at)
+    .item
+      .content
+        .ui.horizontal.divider Created
+        .description = asset.created_at
+
+  - if asset.class.display_property?(:updated_at)
+    .item
+      .content
+        .ui.horizontal.divider Last updated
+        .description = asset.updated_at
+
