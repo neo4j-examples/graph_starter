@@ -209,10 +209,6 @@ module GraphStarter
       end
     end
 
-    def name
-      title
-    end
-
     def as_json(_options = {})
       {self.class.model_slug =>
         {id: id,
