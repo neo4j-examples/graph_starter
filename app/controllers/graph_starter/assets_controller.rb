@@ -18,7 +18,7 @@ module GraphStarter
           title: asset.title,
           url: asset_path(id: asset, model_slug: asset.class.model_slug),
           description: description,
-          image: images? && asset.first_image_source_url || nil
+          image: asset.first_image_source_url
         }.reject {|_, v| v.nil? }.tap do |result|
           model_class.search_properties.each do |property|
             result[property] = asset.read_attribute(property)
@@ -33,8 +33,9 @@ module GraphStarter
 
     def asset_set(var = :asset)
       associations = []
-      associations << :images if images?
-      associations << model_class.category_association if model_class.category_association
+      associations << model_class.image_association
+      associations << model_class.category_association
+      associations.compact
 
       scope = model_class_scope(var)
       scope = yield scope if block_given?
@@ -84,10 +85,6 @@ module GraphStarter
 
     def asset
       model_class_scope.find(params[:id])
-    end
-
-    def images?
-      model_class_scope.has_images?
     end
 
     def model_class_scope(var = :asset)

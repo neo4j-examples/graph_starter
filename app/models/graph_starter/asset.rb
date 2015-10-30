@@ -27,19 +27,39 @@ module GraphStarter
     def self.has_images
       @has_images = true
       has_many :out, :images, type: :HAS_IMAGE, model_class: '::GraphStarter::Image'
-      has_one :out, :image, type: :HAS_IMAGE, model_class: '::GraphStarter::Image'
     end
 
     def self.has_image
-      has_images
+      @has_image = true
+      has_one :out, :image, type: :HAS_IMAGE, model_class: '::GraphStarter::Image'
     end
 
     def self.has_images?
       !!@has_images
     end
 
+    def self.has_image?
+      !!@has_image
+    end
+
+    def self.image_association
+      if has_images?
+        :images
+      elsif has_image?
+        :image
+      end
+    end
+
+    def first_image
+      if self.class.has_images?
+        images.first
+      elsif self.class.has_image?
+        image
+      end
+    end
+
     def first_image_source_url
-      image && image.source_url
+      first_image && first_image.source_url
     end 
 
     def self.category_association(association_name = nil)

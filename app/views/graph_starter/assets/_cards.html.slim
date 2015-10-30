@@ -14,7 +14,7 @@
             .right.floated.meta
               i.hide.large.red.icon
           .header = link_to asset.title, asset_path(asset)
-        - if asset.class.has_images?
+        - if asset.class.has_images? || asset.class.has_image?
           .image
             - if asset.first_image_source_url.present?
               = image_tag asset.first_image_source_url
