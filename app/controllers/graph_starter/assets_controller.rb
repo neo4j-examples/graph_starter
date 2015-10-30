@@ -4,7 +4,7 @@ module GraphStarter
     end
 
     def index
-      @assets = asset_set
+      @assets = asset_set.to_a
     end
 
     def search

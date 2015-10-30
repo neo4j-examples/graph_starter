@@ -9,15 +9,9 @@
   .ui.divider
 
   javascript:
-    var controller = #{@model_slug.to_json.html_safe}
+    $('.ui.search').search({onSelect: function (result, response) { window.location.replace(result.url) }})
 
-  coffee:
-    $('.ui.search').search
-      onSelect: (result, response) ->
-        window.location.replace(result.url)
-
-    $.fn.api.settings.api =
-      search: "/#{controller}/search/{query}.json"
+    $.fn.api.settings.api = {search: "/#{@model_slug}/search/{query}.json"}
 
 - count = @assets.size
 - total_count = @model_class_scope.count
