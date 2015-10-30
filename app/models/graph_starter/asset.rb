@@ -58,6 +58,14 @@ module GraphStarter
       end
     end
 
+    def image_array
+      if self.class.has_images?
+        images.to_a
+      elsif self.class.has_image?
+        [image].compact
+      end
+    end
+
     def first_image_source_url
       first_image && first_image.source_url
     end 

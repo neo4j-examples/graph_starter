@@ -17,7 +17,7 @@ module GraphStarter
     end
 
     def main_column_exists?
-      @main_column_exists ||= asset.class.has_images? && asset.images.present? || asset.body.present?
+      @main_column_exists ||= ((asset.class.has_images? || asset.class.has_image?) && asset.image_array.present?) || asset.body.present?
     end
   end
 end

@@ -1,8 +1,8 @@
 - if asset.body.present?
   = asset.body
-- if asset.images.present?
+- if asset.image_array.present?
   .ui.link.cards
-    - asset.images.each do |image|
+    - asset.image_array.each do |image|
       .card
         .image = image_tag image.source_url, class: 'ui image tiny rounded'
         .content
