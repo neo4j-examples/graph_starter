@@ -8,6 +8,8 @@
 
 
 ready = ->
+  $('#loading-spinner').hide()
+
   $("img").error ->
     console.log 'imgError!!!!'
 
@@ -23,3 +25,7 @@ ready = ->
 
 $(document).ready ready
 $(document).on 'page:load', ready
+
+$(document).on 'page:fetch', (e) ->
+  $('#loading-spinner').css 'display', 'inline-block'
+
