@@ -52,7 +52,7 @@ And define a `app/views/assets/home.html.(erb|slim|haml|etc...)` view.
 
 ### Menu
 
-Define a `app/views/graph_starter/_custom_menu.html.(erb|slim|haml|etc...)` view.  Here is an example of an app using devise and [Slim](http://slim-lang.com/):
+Define a `app/views/layouts/graph_starter/_custom_menu.html.(erb|slim|haml|etc...)` view.  Here is an example of an app using devise and [Slim](http://slim-lang.com/):
 
     .right.menu
       .ui.item = link_to 'Groups', groups_path if @current_user_is_admin
