@@ -145,3 +145,9 @@ Define a `current_user` method to return the currently authenticated user.  Setu
 To overwrite the center panel of the display page for an asset, define a view in `app/views/<model_slug>/body.html.(erb|slim|haml)`.  The asset object is available via the `asset` variable.
 
 For example if you had a `Product` model, products would be displayed at the URL `/products/<product ID>` and so you could define a view at `app/views/products/body.html.(erb|slim|haml)` to change what is displayed.
+
+
+TODOC:
+
+  = render partial: 'graph_starter/assets/cards', locals: {assets: var}
+
