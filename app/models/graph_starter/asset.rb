@@ -156,14 +156,14 @@ module GraphStarter
 
     def self.display_properties(*property_names)
       if property_names.empty?
-        @display_properties || []
+        @display_properties
       else
         @display_properties = property_names.map(&:to_sym)
       end
     end
 
     def self.display_property?(property_name)
-      display_properties.include?(property_name.to_sym)
+      display_properties.nil? || display_properties.include?(property_name.to_sym)
     end
 
 
