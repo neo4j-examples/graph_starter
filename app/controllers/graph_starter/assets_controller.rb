@@ -42,10 +42,14 @@ module GraphStarter
 
       scope = scope.limit(50)
 
-      if associations.present?
-        scope.query_as(var).with(var).proxy_as(model_class, var).with_associations(*associations)
-      else
-        scope
+      scope = if associations.present?
+                scope.query_as(var).with(var).proxy_as(model_class, var).with_associations(*associations)
+              else
+                scope
+              end
+
+      if asset_scope_filter
+        asset_scope_filter.call(scope)
       end
     end
 
@@ -96,5 +100,12 @@ module GraphStarter
 
       @model_class_scope ||= model_class.all(var)
     end
+
+    private
+
+    def asset_scope_filter
+      GraphStarter.configuration.scope_filters[model_class.name.to_sym]
+    end
+
   end
 end
