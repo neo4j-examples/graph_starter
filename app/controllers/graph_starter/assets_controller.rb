@@ -35,7 +35,7 @@ module GraphStarter
       associations = []
       associations << model_class.image_association
       associations << model_class.category_association
-      associations.compact
+      associations.compact!
 
       scope = model_class_scope(var)
       scope = yield scope if block_given?
@@ -48,9 +48,7 @@ module GraphStarter
                 scope
               end
 
-      if asset_scope_filter
-        asset_scope_filter.call(scope)
-      end
+      asset_scope_filter ? asset_scope_filter.call(scope) : scope
     end
 
     def show
