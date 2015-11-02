@@ -1,5 +1,6 @@
 #menu.ui.secondary.pointing.menu
   = link_to 'Home', '/', class: "item #{'active' if request.path == '/'}"
+  - config = GraphStarter::CONFIG
   - menu_models = config.menu_models && config.menu_models.map(&:to_s)
   - GraphStarter::Asset.descendants.each do |model_class|
     - next if menu_models && !model_class.name.in?(menu_models)

@@ -16,10 +16,6 @@ module GraphStarter
       render partial: partial_path, locals: {asset: asset}
     end
 
-    def config
-      GraphStarter::CONFIG
-    end
-
     def present_asset(object)
       yield(AssetPresenter.new(object, self)) if block_given?
     end
