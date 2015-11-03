@@ -150,4 +150,6 @@ For example if you had a `Product` model, products would be displayed at the URL
 TODOC:
 
   = render partial: 'graph_starter/assets/cards', locals: {assets: var}
-
+  scope_filters
+  icon_classes
+  editable_properties
