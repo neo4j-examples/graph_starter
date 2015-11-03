@@ -1,5 +1,3 @@
-- can_write = (level == 'write') && !form.nil?
-
 - value = asset.read_attribute(property.name)
 
 - ruby_type = property.ruby_type.to_s
@@ -28,9 +26,18 @@
   - else
     = value
 
-- else
+- when /ActiveAttr::Typecasting::Boolean$/, /Boolean$/
   - if can_write
-    = form.text_field property.name
+    = form.select property.name, [['True', true], ['False', false]], {}, class: 'ui dropdown'
+  - else
+    = value
+- else
+
+  - if can_write
+    - if values = asset.class.enumerable_property_values_for(property.name)
+      = form.select property.name, values, {}, class: 'ui dropdown'
+    - else
+      = form.text_field property.name
   - else
     - if property.name.to_s.match(/url$/i)
       = link_to value, value

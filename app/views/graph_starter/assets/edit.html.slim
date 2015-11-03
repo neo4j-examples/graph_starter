@@ -14,9 +14,13 @@ h1 = @asset.name
 
   - @asset.class.authorized_properties_and_levels(current_user).each do |property, level|
     .field
-      label = property.name.humanize
+      - editable_properties = GraphStarter.configuration.editable_properties[@asset.class.name.to_sym]
+      - can_write = (level == 'write') && !f.nil? && (editable_properties.nil? || editable_properties.map(&:to_s).include?(property.name))
 
-      = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, level: level, form: f}
+      - if @asset.class.display_property?(property.name) || can_write
+        label = property.name.humanize
+
+        = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, form: f, can_write: can_write}
 
 
   = f.submit 'Update', class: 'ui button'

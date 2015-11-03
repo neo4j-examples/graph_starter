@@ -21,6 +21,9 @@ javascript:
         = render_body(@asset, @model_slug)
 
     div class="#{right_width} wide column" id="right-column"
+      - if app_user_is_admin?
+        = render partial: 'admin_buttons', locals: {asset: @asset}
+
       - if !asset_presenter.left_sidebar_exists?
         = render partial: 'dynamic_items', locals: {asset: @asset}
 

@@ -2,11 +2,12 @@ module GraphStarter
   class Configuration
     attr_writer :user_class
 
-    attr_accessor :menu_models, :icon_classes, :scope_filters
+    attr_accessor :menu_models, :icon_classes, :scope_filters, :editable_properties
 
     def initialize
       @icon_classes = {}
       @scope_filters = {}
+      @editable_properties = {}
     end
 
     def user_class
@@ -21,6 +22,10 @@ module GraphStarter
 
         if !@icon_classes.is_a?(Hash)
           errors[:icon_classes] = 'should be a Hash'
+        end
+
+        if !@editable_properties.is_a?(Hash)
+          errors[:editable_properties] = 'should be a Hash'
         end
 
         if !@scope_filters.is_a?(Hash)

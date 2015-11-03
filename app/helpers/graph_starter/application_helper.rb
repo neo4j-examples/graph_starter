@@ -19,5 +19,13 @@ module GraphStarter
     def present_asset(object)
       yield(AssetPresenter.new(object, self)) if block_given?
     end
+
+    def app_user_is_admin?
+      current_user && current_user.respond_to?(:admin?) && current_user.admin?
+    end
+
+    def app_user
+      defined?(:current_user) ? current_user : nil
+    end
   end
 end

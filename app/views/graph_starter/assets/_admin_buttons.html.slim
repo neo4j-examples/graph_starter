@@ -1,0 +1,10 @@
+.ui.buttons
+  a.ui.labeled.icon.button.right.floated data-authorizable="#{asset.to_json}"
+    | Permissions
+
+  .or
+
+  a.ui.labeled.icon.button.right.floated href="#{edit_asset_path(id: asset)}"
+    i.edit.icon
+    | Edit
+

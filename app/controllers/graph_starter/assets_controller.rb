@@ -65,7 +65,7 @@ module GraphStarter
 
     def update
       @asset = asset
-      @asset.update(params[:book])
+      @asset.update(params[params[:model_slug].singularize])
 
       redirect_to action: :edit
     end

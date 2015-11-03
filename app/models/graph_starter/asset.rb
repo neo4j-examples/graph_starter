@@ -90,6 +90,25 @@ module GraphStarter
     end
 
 
+    def self.enumerable_property(property_name, values)
+      fail "values needs to be an Array, was #{values.inspect}" if !values.is_a?(Array)
+
+      validates :status, inclusion: {in: values}
+
+      enumerable_property_values[self.name.to_sym] ||= {}
+      enumerable_property_values[self.name.to_sym][property_name.to_sym] ||= values
+    end
+
+    def self.enumerable_property_values_for(property_name)
+      enumerable_property_values[self.name.to_sym] && 
+        enumerable_property_values[self.name.to_sym][property_name.to_sym]
+    end
+
+    def self.enumerable_property_values
+      @enumerable_property_values ||= {}
+    end
+
+
     def self.rated
       @rated = true
     end
@@ -242,9 +261,11 @@ module GraphStarter
         {id: id,
          title: title,
          name: title,
-         images: images.map {|image| image.source.url },
          model_slug: self.class.model_slug}
-       }
+       }.tap do |result|
+         result[:images] = images.map {|image| image.source.url } if self.class.has_images?
+         result[:image] = image.source.url if self.class.has_image?
+       end
     end
 
     def self.descendants
