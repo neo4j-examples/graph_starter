@@ -4,6 +4,7 @@ module GraphStarter
     end
 
     def index
+      @all_assets = asset_set(:asset, nil)
       @assets = asset_set.to_a
     end
 
@@ -31,7 +32,7 @@ module GraphStarter
       render json: {results: results_data}.to_json
     end
 
-    def asset_set(var = :asset)
+    def asset_set(var = :asset, limit = 50)
       associations = []
       associations << model_class.image_association
       associations << model_class.category_association
@@ -40,7 +41,7 @@ module GraphStarter
       scope = model_class_scope(var)
       scope = yield scope if block_given?
 
-      scope = scope.limit(50)
+      scope = scope.limit(limit)
 
       scope = if associations.present?
                 scope.query_as(var).with(var).proxy_as(model_class, var).with_associations(*associations)

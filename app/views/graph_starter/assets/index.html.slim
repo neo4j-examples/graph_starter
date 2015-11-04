@@ -14,7 +14,7 @@
     $.fn.api.settings.api = {search: "/#{@model_slug}/search/{query}.json"}
 
 - count = @assets.size
-- total_count = @model_class_scope.count
+- total_count = @all_assets.count
 .stacked.segment Displaying #{[count, total_count].min} of #{number_to_human(total_count)} total
 
 .ui.divider
