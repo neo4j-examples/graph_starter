@@ -26,7 +26,7 @@
             - if property.private?
               i.red.hide.icon
           .description
-            = render partial: 'graph_starter/properties/property', locals: {property: property, asset: asset, level: 'read'}
+            = render partial: 'graph_starter/properties/property', locals: {property: property, asset: asset, level: 'read', can_write: false}
 
   - if asset.class.display_property?(:created_at)
     .item
