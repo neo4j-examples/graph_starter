@@ -11,12 +11,10 @@ module GraphStarter
 
     property :summary
 
-    property :view_count, type: Integer
-
     if GraphStarter.configuration.user_class
       #has_many :in, :creators, type: :CREATED, model_class: GraphStarter.configuration.user_class
 
-      has_many :in, :viewers, rel_class: :View, model_class: GraphStarter.configuration.user_class
+      has_many :in, :viewer_sessions, rel_class: :'GraphStarter::View', model_class: 'GraphStarter::Session'
 
       has_many :in, :rated_by_user, rel_class: :'GraphStarter::Rating', model_class: GraphStarter.configuration.user_class
     end
@@ -270,8 +268,20 @@ module GraphStarter
          model_slug: self.class.model_slug}
        }.tap do |result|
          result[:images] = images.map {|image| image.source.url } if self.class.has_images?
-         result[:image] = image.source.url if self.class.has_image?
+         result[:image] = image.source_url if self.class.has_image? && image
        end
+    end
+
+    def views
+      @views ||= viewer_sessions.rels
+    end
+
+    def total_view_count
+      views.map(&:count).sum
+    end
+
+    def unique_view_count
+      views.size
     end
 
     def self.descendants

@@ -54,6 +54,11 @@ module GraphStarter
     def show
       @asset = asset
 
+      View.record_view(@session_node,
+                       @asset,
+                       browser_string: request.env['HTTP_USER_AGENT'],
+                       ip_address: request.remote_ip)
+
       render file: 'public/404.html', status: :not_found, layout: false if !@asset
     end
 

@@ -8,7 +8,7 @@ class IpAddressValidator < ActiveModel::EachValidator
   def validation_message(value)
     match = value.to_s.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)
 
-    if match
+    if match || value == '::1'
       if !value.split('.').all? { |segment| segment.to_i.in?(0..255) }
         'segments must be between 0 and 255'
       end

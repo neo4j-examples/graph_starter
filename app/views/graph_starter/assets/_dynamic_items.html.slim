@@ -2,9 +2,16 @@
   .item
     .ui.statistic
       .label
-        | Views
+        | Total Views
       .value
-        = asset.view_count || 0
+        = asset.total_view_count || 0
+
+    .ui.statistic
+      .label
+        | Unique Views
+      .value
+        = asset.unique_view_count || 0
+
 
 
   - asset.class.authorized_associations.each do |name, association|
