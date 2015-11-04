@@ -6,7 +6,7 @@ javascript:
 - present_asset(@asset) do |asset_presenter|
   .ui.huge.centered.header
     .content
-      = @asset.title
+      = @asset.safe_title
 
 
   - left_width, center_width, right_width = asset_presenter.display_column_widths
