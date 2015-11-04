@@ -31,14 +31,14 @@ module GraphStarter
       to_node.save
     end
 
-    def self.record_view(user, target, properties = {})
-      test_view = new(properties.merge(from_node: user, to_node: target))
+    def self.record_view(session, target, properties = {})
+      test_view = new(properties.merge(from_node: session, to_node: target))
       return test_view.errors if !test_view.valid?
 
       query = <<-CYPHER
-                  MATCH (user), (target)
-                  WHERE ID(user) = {user_id} AND ID(target) = {target_id}
-                  MERGE (user)-[view_rel:VIEWED]->(target)
+                  MATCH (session), (target)
+                  WHERE ID(session) = {session_id} AND ID(target) = {target_id}
+                  MERGE (session)-[view_rel:VIEWED]->(target)
                   ON CREATE SET
                     view_rel.created_at = {timestamp},
                     view_rel.count = 0
@@ -51,7 +51,7 @@ module GraphStarter
                  CYPHER
 
       Neo4j::Session.current.query(query,
-                                   user_id: user.neo_id,
+                                   session_id: session.neo_id,
                                    target_id: target.neo_id,
                                    browser_string: properties[:browser_string],
                                    ip_address: properties[:ip_address],
