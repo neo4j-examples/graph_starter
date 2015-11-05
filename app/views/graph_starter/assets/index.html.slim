@@ -16,9 +16,10 @@
 
 .ui.divider
 
-a.ui.labeled.icon.button.right.floated href="#{new_asset_path}"
-  i.write.icon
-  | New
+- if app_user_is_admin?
+  a.ui.labeled.icon.button.right.floated href="#{new_asset_path}"
+    i.write.icon
+    | New
 
 
 = render partial: 'graph_starter/assets/cards', locals: {assets: @assets}
