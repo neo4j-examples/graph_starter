@@ -76,6 +76,28 @@ module GraphStarter
       redirect_to action: :edit
     end
 
+    def new
+      @asset = model_class.new
+    end
+
+    def create
+      @asset = model_class.create(params[params[:model_slug].singularize])
+
+      if @asset.persisted?
+        redirect_to action: :show, id: @asset.id
+      else
+        puts '@asset.errors.messages', @asset.errors.messages.inspect
+        flash[:error] = @asset.errors.messages.to_a.map {|pair| pair.join(' ') }.join(' / ')
+        redirect_to :back
+      end
+    end
+
+    def destroy
+      asset.destroy
+
+      redirect_to action: :index
+    end
+
     def rate
       if current_user
         rating = asset.rating_for(current_user)

@@ -1,22 +1,24 @@
 
 - if @assets.present?
-  .ui.search
-    .ui.icon.input
-      input.prompt type="text" placeholder="Search..." style="width: 400px"
-      i.search.icon
-    .results
-
-  .ui.divider
+  = render partial: 'search'
 
   javascript:
-    $('.ui.search').search({onSelect: function (result, response) { window.location.replace(result.url) }})
+    $('.ui.search').search({
+      onSelect: function (result, response) { window.location.replace(result.url) },
+      apiSettings: {url: "/#{@model_slug}/search/{query}.json"}
+      })
 
-    $.fn.api.settings.api = {search: "/#{@model_slug}/search/{query}.json"}
+  .ui.divider
 
 - count = @assets.size
 - total_count = @all_assets.count
 .stacked.segment Displaying #{[count, total_count].min} of #{number_to_human(total_count)} total
 
 .ui.divider
+
+a.ui.labeled.icon.button.right.floated href="#{new_asset_path}"
+  i.write.icon
+  | New
+
 
 = render partial: 'graph_starter/assets/cards', locals: {assets: @assets}

@@ -2,7 +2,7 @@
   = link_to 'Home', '/', class: "item #{'active' if request.path == '/'}"
   - config = GraphStarter::CONFIG
   - menu_models = config.menu_models && config.menu_models.map(&:to_s)
-  - GraphStarter::Asset.descendants.each do |model_class|
+  - GraphStarter::Asset.descendants.sort_by {|m| (menu_models || []).index(m.name) || 0 }.each do |model_class|
     - next if menu_models && !model_class.name.in?(menu_models)
     - path = graph_starter.assets_path(model_slug: model_class.model_slug)
     = link_to model_class.name.tableize.humanize, path, class: "item #{'active' if request.path.match(/^#{path}/)}"

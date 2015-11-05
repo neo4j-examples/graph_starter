@@ -28,7 +28,7 @@
 
 - when /ActiveAttr::Typecasting::Boolean$/, /Boolean$/
   - if can_write
-    = form.select property.name, [['True', true], ['False', false]], {}, class: 'ui dropdown'
+    = form.select property.name, [['False', false], ['True', true]], {}, class: 'ui dropdown'
   - else
     = value
 - else

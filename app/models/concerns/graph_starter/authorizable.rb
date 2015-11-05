@@ -6,8 +6,11 @@ module GraphStarter
       property :private, type: ActiveAttr::Typecasting::Boolean, default: false
       validates :private, inclusion: {in: [true, false]}
 
-      has_many :in, :allowed_users, rel_class: :CanAccess, model_class: :User
-      has_many :in, :allowed_groups, rel_class: :CanAccess, model_class: :Group
+      if GraphStarter.configuration.user_class
+        has_many :in, :allowed_users, rel_class: :CanAccess, model_class: GraphStarter.configuration.user_class
+      end
+
+      has_many :in, :allowed_groups, rel_class: :CanAccess, model_class: :'GraphStarter::Group'
     end
 
     def set_access_levels(model, access_levels)

@@ -1,0 +1,34 @@
+= form_for @asset, url: url_for(action: action), html: {class: 'ui form'} do |f|
+  = image_tag @asset.first_image_source_url, class: 'ui medium image' if @asset.class.has_image? || @asset.class.has_images?
+  /.field
+  /  label Image
+
+  /  = f.file_field :image
+
+  - @asset.class.authorized_properties_and_levels(current_user).each do |property, level|
+    .field
+      - editable_properties = GraphStarter.configuration.editable_properties[@asset.class.name.to_sym]
+      - can_write = (level == 'write') && !f.nil? && (editable_properties.nil? || editable_properties.map(&:to_s).include?(property.name))
+
+      - if @asset.class.display_property?(property.name) || can_write
+        label = property.name.humanize
+
+        = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, form: f, can_write: can_write}
+
+  - @asset.class.authorized_associations.each do |name, association|
+    javascript:
+      var current_#{name} = [];
+
+    .field
+      label = name.to_s.humanize
+
+      - field_name = (association.type == :has_many ? "#{name.to_s.singularize}_ids" : "#{name}_id")
+      - target_class = association.target_class
+      - options = target_class.as(:n).pluck(target_class.name_property, target_class.id_property_name)
+      = f.select field_name, options, {}, class: 'ui fluid search dropdown', multiple: ''
+
+  javascript:
+    $('.ui.dropdown').dropdown()
+
+  = f.submit action.humanize, class: 'ui button'
+
