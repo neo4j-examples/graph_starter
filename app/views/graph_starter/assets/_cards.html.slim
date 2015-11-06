@@ -23,15 +23,17 @@
         - categories = Array(asset.categories).sort_by(&:name)
         - if categories.present?
           .content
-            - categories[0,2].each do |category|
-              .extra.content
-                - if (category.class.has_images? || category.class.has_image?) && category.first_image_source_url.present?
-                  = image_tag category.first_image_source_url, class: 'ui avatar image'
-                - else
-                  i class="#{category.class.icon_class || 'folder'} icon"
-                = link_to category.name, asset_path(category)
-            - if categories.size > 2
-              .extra.content
-                i.ellipsis.horizontal.icon
-                | more categories
+            .ui.relaxed.divided.list
+              - categories[0,2].each do |category|
+                .item
+                  - if (category.class.has_images? || category.class.has_image?) && category.first_image_source_url.present?
+                    = image_tag category.first_image_source_url, class: 'ui avatar image'
+                  - else
+                    i class="#{category.class.icon_class || 'folder'} large icon"
+                  .content
+                    = link_to category.name, asset_path(category)
+              - if categories.size > 2
+                .item
+                  i.ellipsis.horizontal.large.icon
+                  .content more categories
 

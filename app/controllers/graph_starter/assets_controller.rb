@@ -35,7 +35,7 @@ module GraphStarter
     def asset_set(var = :asset, limit = 50)
       associations = []
       associations << model_class.image_association
-      associations << model_class.category_association
+      associations += model_class.category_associations
       associations.compact!
 
       scope = model_class_scope(var)

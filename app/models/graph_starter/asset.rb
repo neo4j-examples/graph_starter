@@ -68,20 +68,24 @@ module GraphStarter
       first_image && first_image.source_url
     end 
 
-    def self.category_association(association_name = nil)
-      if association_name.nil?
-        @category_association
+    def self.category_associations(*association_names)
+      if association_names.empty?
+        @category_associations || []
       else
-        fail "Cannot declare category_association twice" if @category_association.present?
-        name = association_name.to_sym
-        fail ArgumentError, "Association #{name} is not defined" if associations[name].nil?
-        @category_association = name
+        fail "Cannot declare category_associations twice" if @category_associations.present?
+        names = association_names.map(&:to_sym)
+        bad_names = names.select {|name| associations[name].nil? }
+        fail ArgumentError, "Associations #{bad_names.join(', ')} is not defined" if !bad_names.empty?
+
+        @category_associations = names
       end
     end
 
     def categories
-      if self.class.category_association
-        send(self.class.category_association)
+      if self.class.category_associations
+        self.class.category_associations.flat_map do |category_association|
+          send(category_association)
+        end.compact
       else
         []
       end
