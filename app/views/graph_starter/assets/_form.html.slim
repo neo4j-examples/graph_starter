@@ -25,7 +25,10 @@
       - field_name = (association.type == :has_many ? "#{name.to_s.singularize}_ids" : "#{name}_id")
       - target_class = association.target_class
       - options = target_class.as(:n).pluck(target_class.name_property, target_class.id_property_name)
-      = f.select field_name, options, {}, class: 'ui fluid search dropdown', multiple: ''
+
+      - html_options = {class: 'ui fluid search dropdown'}
+      - html_options[:multiple] = '' if association.type == :has_many
+      = f.select field_name, options, {}, html_options
 
   javascript:
     $('.ui.dropdown').dropdown()
