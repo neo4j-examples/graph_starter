@@ -49,18 +49,20 @@ module GraphStarter
                 scope
               end
 
-      asset_scope_filter ? asset_scope_filter.call(scope) : scope
+      scope
     end
 
     def show
       @asset = asset
 
-      View.record_view(@session_node,
-                       @asset,
-                       browser_string: request.env['HTTP_USER_AGENT'],
-                       ip_address: request.remote_ip)
-
-      render file: 'public/404.html', status: :not_found, layout: false if !@asset
+      if @asset
+        View.record_view(@session_node,
+                         @asset,
+                         browser_string: request.env['HTTP_USER_AGENT'],
+                         ip_address: request.remote_ip)
+      else
+        render file: 'public/404.html', status: :not_found, layout: false
+      end
     end
 
     def edit
@@ -114,24 +116,15 @@ module GraphStarter
     end
 
     def asset
-      model_class_scope.find(params[:id])
+      model_class_scope.where(uuid: params[:id]).to_a[0]
     end
 
     def model_class_scope(var = :asset)
-      #@model_class_scope = if defined?(current_user)
-      #  model_class.authorized_for(current_user)
-      #else
-      #  model_class.all(var)
-      #end
-
-      @model_class_scope ||= model_class.all(var)
+      @model_class_scope ||= if defined?(current_user)
+        model_class.authorized_for(current_user)
+      else
+        model_class.all(var)
+      end
     end
-
-    private
-
-    def asset_scope_filter
-      GraphStarter.configuration.scope_filters[model_class.name.to_sym]
-    end
-
   end
 end

@@ -303,17 +303,23 @@ module GraphStarter
     def self.authorized_for(user)
       require 'graph_starter/query_authorizer'
 
-      if category_association
-        ::GraphStarter::QueryAuthorizer.new(all(:asset).send(category_association, :category, nil, optional: true))
-          .authorized_query([:asset, :category], user)
-          .with('DISTINCT asset AS asset')
-          .proxy_as(self, :asset)
-      else
-        ::GraphStarter::QueryAuthorizer.new(all(:asset))
-          .authorized_query(:asset, user)
-          .with('DISTINCT asset AS asset')
-          .proxy_as(self, :asset)
-      end
+      query, associations = if category_associations.size > 0
+                              where_clause = category_associations.map do |association_name|
+                                category_association = self.associations[association_name]
+                                "(asset)#{category_association.arrow_cypher}(category:#{category_association.target_class})"
+                              end.join(' OR ')
+
+                              [all(:asset).query.optional_match(:category).where(where_clause),
+                               [:asset, :category]]
+                            else
+                              [all(:asset),
+                               :asset]
+                            end
+
+      ::GraphStarter::QueryAuthorizer.new(query, asset: GraphStarter.configuration.scope_filters[self.name.to_sym])
+        .authorized_query(associations, user)
+        .with('DISTINCT asset AS asset, level')
+        .proxy_as(self, :asset)
     end
 
     def self.authorized_properties(user)

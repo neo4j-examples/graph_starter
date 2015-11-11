@@ -4,10 +4,11 @@ module GraphStarter
     #  * a Query
     #  * a Proxy object
     #  * Anything that responds to #query where a `Query` is returned
-    def initialize(query_object)
+    def initialize(query_object, filter = nil)
       validate_query_object!(query_object)
 
       @query_object = query_object
+      @filter = filter
     end
 
     def authorized_pluck(variable, user)
@@ -57,7 +58,10 @@ module GraphStarter
 
     def authorized_user_query(query, user, variables, user_variable = :user)
       collect_levels_string = variables.flat_map do |variable|
-        ["CASE WHEN (user.admin OR #{variable}_created_rel IS NOT NULL) THEN 'write' WHEN NOT(#{variable}.private) THEN 'read' END",
+        filter = scope_filter(variable)
+
+        filter_string = filter ? ' AND ' + filter.call(variable) : ''
+        ["CASE WHEN (user.admin OR #{variable}_created_rel IS NOT NULL) THEN 'write' WHEN NOT(#{variable}.private) #{filter_string} THEN 'read' END",
          "#{variable}_direct_access_rel.level",
          "#{variable}_indirect_can_access_rel.level"]
       end.compact.join(', ')
@@ -69,6 +73,14 @@ module GraphStarter
 
       result_query
         .with("collect([#{collect_levels_string}]) AS level_collections", *variables)
+    end
+
+    def scope_filter(variable)
+      if @filter.is_a?(Hash)
+        @filter[variable.to_sym]
+      else
+        @filter
+      end
     end
 
     def user_authorization_paths(variable, user_variable = :user)
