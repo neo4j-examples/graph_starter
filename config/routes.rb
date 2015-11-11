@@ -24,7 +24,7 @@ GraphStarter::Engine.routes.draw do
 
   get ':model_slug/:id' => 'assets#show', as: :asset
   get ':model_slug/:id/edit' => 'assets#edit', as: :edit_asset
-  put ':model_slug/:id/rate/:new_rating' => 'assets#rate', as: :rate_asset
+  put ':model_slug/:id/rate(/:new_rating)' => 'assets#rate', as: :rate_asset
   get ':model_slug/search/:query.json' => 'assets#search', as: :search_assets
 
   get ':model_slug/:id/destroy' => 'assets#destroy', as: :destroy_asset
