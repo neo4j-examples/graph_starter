@@ -1,9 +1,11 @@
-= form_for @asset, url: url_for(action: action), html: {class: 'ui form'} do |f|
-  = image_tag @asset.first_image_source_url, class: 'ui medium image' if @asset.class.has_image? || @asset.class.has_images?
-  /.field
-  /  label Image
+= form_for @asset, url: url_for(action: action), html: {class: 'ui form', multipart: true} do |f|
+  = render partial: 'images', locals: {asset: @asset}
 
-  /  = f.file_field :image
+  - if @access_level == 'write'
+    .field
+      label Add image
+
+      = file_field_tag 'image'
 
   - @asset.class.authorized_properties_and_levels(current_user).each do |property, level|
     .field

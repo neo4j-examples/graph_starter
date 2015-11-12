@@ -1,15 +1,3 @@
 - if asset.body.present?
   = asset.body
-- if asset.image_array.present?
-  .ui.link.cards
-    - asset.image_array.each do |image|
-      .card
-        .image = image_tag image.source_url, class: 'ui image tiny rounded'
-        .content
-          .header = image.title if image.title.present?
-          - if image.description.present?
-            .meta = image.description
-        .extra.content
-          a.ui.large.green.button href="#{image.source_url}" Full Size
-
-
+= render partial: 'images', locals: {asset: asset}

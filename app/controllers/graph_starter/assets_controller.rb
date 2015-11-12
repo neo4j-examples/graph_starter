@@ -66,7 +66,7 @@ module GraphStarter
     end
 
     def edit
-      @asset = asset
+      @asset, @access_level = asset_with_access_level
 
       render file: 'public/404.html', status: :not_found, layout: false if !@asset
     end
@@ -74,6 +74,12 @@ module GraphStarter
     def update
       @asset = asset
       @asset.update(params[params[:model_slug].singularize])
+
+      if @asset.class.has_image?
+        @asset.image = Image.create(source: params[:image])
+      else @asset.has_images?
+        @asset.images << Image.create(source: params[:image])
+      end
 
       redirect_to action: :edit
     end
@@ -117,6 +123,15 @@ module GraphStarter
 
     def asset
       model_class_scope.where(uuid: params[:id]).to_a[0]
+    end
+
+    def asset_with_access_level
+      scope = model_class_scope.where(uuid: params[:id])
+      if defined?(current_user)
+        scope.pluck(:asset, :level)
+      else
+        scope.pluck(:asset, '"read"')
+      end.to_a[0]
     end
 
     def model_class_scope(var = :asset)
