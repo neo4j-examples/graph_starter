@@ -1,0 +1,30 @@
+.card
+  .content
+    - if asset.private?
+      .right.floated.meta
+        i.hide.large.red.icon
+    .header = link_to asset.safe_title, asset_path(asset)
+  - if asset.class.has_images? || asset.class.has_image?
+    .image
+      - if asset.first_image_source_url.present?
+        = image_tag asset.first_image_source_url
+      - else
+        = image_tag 'missing'
+  - categories = Array(asset.categories).sort_by(&:name)
+  - if categories.present?
+    .content
+      .ui.relaxed.divided.list
+        - categories[0,2].each do |category|
+          .item
+            - if (category.class.has_images? || category.class.has_image?) && category.first_image_source_url.present?
+              = image_tag category.first_image_source_url, class: 'ui avatar image'
+            - else
+              i class="#{category.class.icon_class || 'folder'} large icon"
+            .content
+              = link_to category.name, asset_path(category)
+        - if categories.size > 2
+          .item
+            i.ellipsis.horizontal.large.icon
+            .content more categories
+
+

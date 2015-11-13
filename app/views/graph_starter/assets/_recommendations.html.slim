@@ -1,0 +1,11 @@
+- recommendations = asset.secret_sauce_recommendations
+- if recommendations.present?
+  .item
+    .content
+      .ui.horizontal.divider Recommended
+      .description
+        .ui.middle.aligned.big.divided.list
+          - recommendations.each do |recommendation|
+            .item data-score="#{recommendation.score}"
+              .content = link_to recommendation.asset.title, asset_path(recommendation.asset)
+

@@ -1,0 +1,21 @@
+- as_cards = false if !defined?(as_cards)
+
+- asset.class.authorized_associations.each do |name, association|
+  - result = asset.send(name)
+  - if result.present?
+    .item
+      .content
+        .ui.horizontal.divider = name.to_s.humanize
+        .description
+          - if as_cards
+            .ui.link.cards
+              - Array(result).each do |object|
+                = render partial: 'card', locals: {asset: object}
+          - else
+            .ui.middle.aligned.big.divided.list
+              - Array(result).each do |object|
+                .item
+                  i class="#{association.target_class.icon_class} icon"
+                  .content
+                    = link_to object.title, asset_path(object)
+

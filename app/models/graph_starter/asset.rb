@@ -156,8 +156,6 @@ module GraphStarter
 
     def self.body_property(property_name = nil)
       if property_name.nil?
-        body_property(default_name_property) if @body_property.nil?
-
         @body_property
       else
         fail "Cannot declare body_property twice" if @body_property.present?
@@ -176,7 +174,7 @@ module GraphStarter
         fail "No body_property defined for #{self.name}!"
       end
 
-      body_property || 'body'
+      @body_property
     end
 
 
@@ -210,11 +208,13 @@ module GraphStarter
 
         send(method_name)
       elsif method_name.to_sym == :body
-        self.class.send(:define_method, method_name) do
-          read_attribute(self.class.body_property)
-        end
+        if self.class.body_property
+          self.class.send(:define_method, method_name) do
+            read_attribute(self.class.body_property)
+          end
 
-        send(method_name)
+          send(method_name)
+        end
       else
         super
       end
@@ -363,7 +363,7 @@ module GraphStarter
     end
 
     def self.authorized_associations
-      associations.except(*Asset.associations.keys + [:images, :image])
+      @authorized_associations ||= associations.except(*Asset.associations.keys + [:images, :image])
     end
 
     def self.icon_class

@@ -18,6 +18,8 @@
         = render partial: 'graph_starter/properties/property', locals: {property: property, asset: @asset, form: f, can_write: can_write}
 
   - @asset.class.authorized_associations.each do |name, association|
+    - target_class = association.target_class
+    - next if !target_class.is_a?(GraphStarter::Asset)
     javascript:
       var current_#{name} = [];
 
@@ -25,7 +27,6 @@
       label = name.to_s.humanize
 
       - field_name = (association.type == :has_many ? "#{name.to_s.singularize}_ids" : "#{name}_id")
-      - target_class = association.target_class
       - options = target_class.as(:n).pluck(target_class.name_property, target_class.id_property_name)
 
       - html_options = {class: 'ui fluid search dropdown'}
