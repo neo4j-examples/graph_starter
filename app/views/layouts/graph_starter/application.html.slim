@@ -40,8 +40,8 @@ html
 
       = yield
 
-    - if @current_user_is_admin
+    /- if @current_user_is_admin
       #change-object-permissions
 
-      - if !request.env['HTTP_X_XHR_REFERER']
+      /- if !request.env['HTTP_X_XHR_REFERER']
         = render partial: 'layouts/graph_starter/change_permissions_modal', locals: {asset: @asset}
