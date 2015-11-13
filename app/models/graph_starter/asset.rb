@@ -151,7 +151,7 @@ module GraphStarter
     def safe_title
       sanitizer = Rails::Html::WhiteListSanitizer.new
 
-      sanitizer.sanitize(title, tags: %w(b em i strong))
+      sanitizer.sanitize(title, tags: %w(b em i strong)).html_safe
     end
 
     def self.body_property(property_name = nil)
