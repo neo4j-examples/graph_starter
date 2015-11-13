@@ -77,7 +77,7 @@ module GraphStarter
 
       if @asset.class.has_image?
         @asset.image = Image.create(source: params[:image])
-      else @asset.has_images?
+      elsif @asset.class.has_images?
         @asset.images << Image.create(source: params[:image])
       end
 
