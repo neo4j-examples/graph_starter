@@ -16,10 +16,7 @@
       .ui.relaxed.divided.list
         - categories[0,2].each do |category|
           .item
-            - if (category.class.has_images? || category.class.has_image?) && category.first_image_source_url.present?
-              = image_tag category.first_image_source_url, class: 'ui avatar image'
-            - else
-              i class="#{category.class.icon_class || 'folder'} large icon"
+            = render partial: 'icon', locals: {asset: category}
             .content
               = link_to category.name, asset_path(category)
         - if categories.size > 2

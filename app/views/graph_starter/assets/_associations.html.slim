@@ -15,7 +15,7 @@
             .ui.middle.aligned.big.divided.list
               - Array(result).each do |object|
                 .item
-                  i class="#{association.target_class.icon_class} icon"
                   .content
+                    = render partial: 'icon', locals: {asset: object}
                     = link_to object.title, asset_path(object)
 

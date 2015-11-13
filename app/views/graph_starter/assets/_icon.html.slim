@@ -1,0 +1,5 @@
+- if (asset.class.has_images? || asset.class.has_image?) && asset.first_image_source_url.present?
+  = image_tag asset.first_image_source_url, class: 'ui avatar image'
+- else
+  i class="#{asset.class.icon_class || 'folder'} large icon"
+
