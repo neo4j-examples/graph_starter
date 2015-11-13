@@ -26,7 +26,7 @@ script type="text/x-handlebars"
                       th colspan="3"
                         h2
                           i class="#{result_type == 'user' ? 'user' : 'users'} icon"
-                          = result_type.humanize.pluralize                         
+                          = result_type.humanize.pluralize
                     | {{#each #{result_type}_results as |result|}}
                     tr
                       td
