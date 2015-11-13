@@ -304,12 +304,16 @@ module GraphStarter
       require 'graph_starter/query_authorizer'
 
       query, associations = if category_associations.size > 0
-                              where_clause = category_associations.map do |association_name|
-                                category_association = self.associations[association_name]
-                                "(asset)#{category_association.arrow_cypher}(category:#{category_association.target_class})"
-                              end.join(' OR ')
+                              query = all(:asset).query
 
-                              [all(:asset).query.optional_match(:category).where(where_clause),
+                              query = category_associations.each_with_index.inject(query) do |query, (association_name, i)|
+                                category_association = self.associations[association_name]
+                                clause = "(asset)#{category_association.arrow_cypher}(category:#{category_association.target_class})"
+
+                                query.optional_match(clause).with(:asset, "#{"categories#{i-1} +" if i > 0} collect(category) AS categories#{i}")
+                              end.unwind(category: "categories#{category_associations.size - 1}")
+
+                              [query,
                                [:asset, :category]]
                             else
                               [all(:asset),
