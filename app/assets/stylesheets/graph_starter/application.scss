@@ -9,9 +9,8 @@
 }
 
 #loading-spinner {
-  position: absolute;
+  position: fixed;
   width: 100%;
   display: none;
-  margin-top: 2em;
   z-index: 1000;
 }

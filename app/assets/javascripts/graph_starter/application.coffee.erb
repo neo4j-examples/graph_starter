@@ -4,9 +4,13 @@
 #= require graph_starter/underscore
 #= require semantic-ui
 
+spinner_timeout_id = null
 
 ready = ->
   $('#loading-spinner').hide()
+  if spinner_timeout_id?
+    window.clearTimeout(spinner_timeout_id)
+    spinner_timeout_id = null
 
   $("img").error ->
     console.log 'imgError!!!!'
@@ -25,5 +29,7 @@ $(document).ready ready
 $(document).on 'page:load', ready
 
 $(document).on 'page:fetch', (e) ->
-  $('#loading-spinner').css 'display', 'inline-block'
+  spinner_timeout_id = window.setTimeout ->
+    $('#loading-spinner').css 'display', 'inline-block'
+  , 300
 
