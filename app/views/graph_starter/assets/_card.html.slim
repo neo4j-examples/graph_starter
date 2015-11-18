@@ -16,7 +16,7 @@
       .ui.relaxed.divided.list
         - categories[0,2].each do |category|
           .item
-            = render partial: 'icon', locals: {asset: category}
+            = render partial: 'graph_starter/assets/icon', locals: {asset: category}
             .content
               = link_to category.name, asset_path(category)
         - if categories.size > 2
