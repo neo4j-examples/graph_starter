@@ -263,16 +263,18 @@ module GraphStarter
       end
     end
 
-    def as_json(_options = {})
-      {self.class.model_slug =>
-        {id: id,
-         title: title,
-         name: title,
-         model_slug: self.class.model_slug}
-       }.tap do |result|
-         result[:images] = images.map {|image| image.source.url } if self.class.has_images?
-         result[:image] = image.source_url if self.class.has_image? && image
-       end
+    def as_json(options = {})
+      data = {
+        id: id,
+        title: title,
+        name: title,
+        model_slug: self.class.model_slug
+      }.tap do |result|
+        result[:images] = images.map {|image| image.source.url } if self.class.has_images?
+        result[:image] = image.source_url if self.class.has_image? && image
+      end
+
+      options[:root] ? {self.class.model_slug.singularize => data} : data
     end
 
     def views

@@ -43,11 +43,7 @@ module GraphStarter
 
       scope = scope.limit(limit)
 
-      scope = if associations.present?
-                scope.query_as(var).with(var).proxy_as(model_class, var).with_associations(*associations)
-              else
-                scope
-              end
+      scope = apply_associations(scope, var)
 
       scope
     end
@@ -122,7 +118,7 @@ module GraphStarter
     end
 
     def asset
-      model_class_scope.where(uuid: params[:id]).to_a[0]
+      apply_associations(model_class_scope.where(uuid: params[:id])).to_a[0]
     end
 
     def asset_with_access_level
@@ -139,6 +135,24 @@ module GraphStarter
         model_class.authorized_for(current_user)
       else
         model_class.all(var)
+      end
+    end
+
+    def associations
+      return @associations if @associations.present?
+
+      @associations = []
+      @associations << model_class.image_association
+      @associations += model_class.category_associations
+      @associations.compact!
+      @associations
+    end
+
+    def apply_associations(scope, var = :asset)
+      if associations.present?
+        scope.query_as(var).with(var).proxy_as(model_class, var).with_associations(*associations)
+      else
+        scope
       end
     end
   end
