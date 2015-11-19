@@ -325,6 +325,7 @@ module GraphStarter
       ::GraphStarter::QueryAuthorizer.new(query, asset: GraphStarter.configuration.scope_filters[self.name.to_sym])
         .authorized_query(associations, user)
         .with('DISTINCT asset AS asset, level')
+        .break
         .proxy_as(self, :asset)
     end
 
