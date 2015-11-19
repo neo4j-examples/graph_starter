@@ -5,7 +5,16 @@ end
 
 json.associations do
   @asset.class.authorized_associations.each do |name, association|
-    json.set! name, @asset.send(name).to_a
+    value = case association.type
+            when :has_many
+              @asset.send(name).to_a
+            when :has_one
+              @asset.send(name)
+            else
+              fail "Invalid association: #{association.inspect}"
+            end
+
+    json.set! name, value
   end
 end
 
