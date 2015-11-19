@@ -27,5 +27,9 @@ module GraphStarter
     def app_user
       defined?(:current_user) ? current_user : nil
     end
+
+    def missing_image_tag
+      @missing_image_tag ||= image_tag 'missing'
+    end
   end
 end

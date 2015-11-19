@@ -9,7 +9,7 @@
       - if asset.first_image_source_url.present?
         = image_tag asset.first_image_source_url
       - else
-        = image_tag 'missing'
+        = missing_image_tag
   - categories = Array(asset.categories).sort_by(&:name)
   - if categories.present?
     .content
