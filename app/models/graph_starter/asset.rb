@@ -270,8 +270,9 @@ module GraphStarter
         name: title,
         model_slug: self.class.model_slug,
         summary: summary,
-        image_urls: image_array.map(&:source_url)
+        categories: categories
       }.tap do |result|
+        result[:image_urls] = image_array.map(&:source_url) if image_array
         result[:images] = images.map {|image| image.source.url } if self.class.has_images?
         result[:image] = image.source_url if self.class.has_image? && image
       end

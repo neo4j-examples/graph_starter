@@ -6,6 +6,7 @@ json.summary @asset.summary
 
 json.image_urls @asset.reload.image_array.map(&:source_url)
 
+json.categories @asset.categories
 
 json.associations do
   @asset.class.authorized_associations.each do |name, association|
