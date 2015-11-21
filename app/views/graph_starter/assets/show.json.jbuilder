@@ -2,6 +2,10 @@
   json.set! property.name, @asset.read_attribute(property.name)
 end
 
+json.summary @asset.summary
+
+json.image_urls @asset.reload.image_array.map(&:source_url)
+
 
 json.associations do
   @asset.class.authorized_associations.each do |name, association|
