@@ -268,7 +268,9 @@ module GraphStarter
         id: id,
         title: title,
         name: title,
-        model_slug: self.class.model_slug
+        model_slug: self.class.model_slug,
+        summary: summary,
+        image_urls: @asset.reload.image_array.map(&:source_url)
       }.tap do |result|
         result[:images] = images.map {|image| image.source.url } if self.class.has_images?
         result[:image] = image.source_url if self.class.has_image? && image
