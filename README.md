@@ -146,7 +146,7 @@ To overwrite the center panel of the display page for an asset, define a view in
 
 For example if you had a `Product` model, products would be displayed at the URL `/products/<product ID>` and so you could define a view at `app/views/products/body.html.(erb|slim|haml)` to change what is displayed.
 
-## Rendering assets
+## Rendering lists of assets
 
 If you need to display a list of assets in your custom view, you can use `GraphStarter`'s built-in card listing partial:
 
