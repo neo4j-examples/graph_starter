@@ -146,10 +146,69 @@ To overwrite the center panel of the display page for an asset, define a view in
 
 For example if you had a `Product` model, products would be displayed at the URL `/products/<product ID>` and so you could define a view at `app/views/products/body.html.(erb|slim|haml)` to change what is displayed.
 
+## Rendering assets
 
-TODOC:
+If you need to display a list of assets in your custom view, you can use `GraphStarter`'s built-in card listing partial:
 
+```ruby
   = render partial: 'graph_starter/assets/cards', locals: {assets: var}
-  scope_filters
-  icon_classes
-  editable_properties
+```
+
+# Global configuration
+
+These variables can be configured before you load your application / script like this:
+
+```ruby
+GraphStarter.configure do |config|
+  config.menu_models = %i(GraphGist Industry UseCase)
+end
+```
+
+### menu_models
+
+A list of models which are display on the UI menu.  By default this is all models.
+
+#### Example:
+
+```ruby
+config.menu_models = %i(GraphGist Industry UseCase)
+```
+### scope_filters
+
+A filter which is applied to your models when displaying them.  Does not apply to admins.
+
+#### Example:
+
+```ruby
+config.scope_filters = {
+  GraphGist: -> (var) do
+    "#{var}.status = 'live'"
+  end
+}
+```
+
+### icon_classes
+
+A definition of CSS classes from [Semantic UI's icons](http://semantic-ui.com/elements/icon.html) to be used for icons next to asset links for those models.  Can include multiple class names.
+
+#### Example:
+
+```ruby
+config.icon_classes = {
+  GraphGist: 'file text icon',
+  Person: 'user'
+}
+```
+
+### editable_properties
+
+Properties on models which can be edited by users with access to edit the assets.
+
+#### Example:
+
+```ruby
+  config.editable_properties = {
+    GraphGist: %w(title url featured status)
+  }
+```
+
