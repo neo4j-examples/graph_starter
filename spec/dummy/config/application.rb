@@ -1,6 +1,11 @@
 require File.expand_path('../boot', __FILE__)
 
-require 'rails/all'
+# Pick the frameworks you want:
+require "action_controller/railtie"
+require "action_mailer/railtie"
+require "action_view/railtie"
+require "sprockets/railtie"
+# require "rails/test_unit/railtie"
 
 Bundler.require(*Rails.groups)
 require "graph_starter"
@@ -20,7 +25,6 @@ module Dummy
     # config.i18n.default_locale = :de
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.neo4j.include_root_in_json = false
   end
 end
 
