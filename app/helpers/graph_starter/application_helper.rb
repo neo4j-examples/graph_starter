@@ -29,7 +29,7 @@ module GraphStarter
     end
 
     def missing_image_tag
-      @missing_image_tag ||= image_tag 'missing'
+      @missing_image_tag ||= image_tag 'missing.png'
     end
   end
 end
