@@ -11,6 +11,7 @@
       - else
         = missing_image_tag
   - categories = Array(asset.categories).sort_by(&:name)
+  = render partial: 'graph_starter/assets/extra_card_content', locals: {asset: asset}
   - if categories.present?
     .content
       .ui.relaxed.divided.list
