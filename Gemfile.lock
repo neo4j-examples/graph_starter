@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    graph_starter (0.13.7)
+    graph_starter (0.13.8)
       neo4j (~> 6.0.0.rc)
       neo4jrb-paperclip (= 0.0.3)
       paperclip (~> 4.2.0)
@@ -77,19 +77,19 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mime-types (2.6.2)
+    mime-types (2.99)
     mini_portile (0.6.2)
     minitest (5.8.3)
     multi_json (1.11.2)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
-    neo4j (6.0.0.rc.4)
+    neo4j (6.0.0)
       active_attr (~> 0.8)
       activemodel (~> 4)
       activesupport (~> 4)
       neo4j-core (~> 6.0.0.rc.1)
       orm_adapter (~> 0.5.0)
-    neo4j-core (6.0.0.rc.1)
+    neo4j-core (6.0.0)
       activesupport
       faraday (~> 0.9.0)
       faraday_middleware (~> 0.9.1)
