@@ -27,16 +27,16 @@ html
 
     = render partial: 'layouts/graph_starter/menu'
 
-    - if notice.present?
-      p.ui.green.message
-        i.close.icon
-        = notice
-    - if alert.present?
-      p.ui.yellow.message
-        i.close.icon
-        = alert
+    #main.ui.container
+      - if notice.present?
+        p.ui.green.message
+          i.close.icon
+          = notice
+      - if alert.present?
+        p.ui.yellow.message
+          i.close.icon
+          = alert
 
-    .ui.container
 
       = yield
 
