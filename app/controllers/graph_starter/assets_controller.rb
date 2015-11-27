@@ -32,22 +32,6 @@ module GraphStarter
       render json: {results: results_data}.to_json
     end
 
-    def asset_set(var = :asset, limit = 50)
-      associations = []
-      associations << model_class.image_association
-      associations += model_class.category_associations
-      associations.compact!
-
-      scope = model_class_scope(var)
-      scope = yield scope if block_given?
-
-      scope = scope.limit(limit)
-
-      scope = apply_associations(scope, var)
-
-      scope
-    end
-
     def show
       @asset = asset
 
@@ -115,6 +99,22 @@ module GraphStarter
       else
         render json: {}
       end
+    end
+
+    def asset_set(var = :asset, limit = 50)
+      associations = []
+      associations << model_class.image_association
+      associations += model_class.category_associations
+      associations.compact!
+
+      scope = model_class_scope(var)
+      scope = yield scope if block_given?
+
+      scope = scope.limit(limit)
+
+      scope = apply_associations(scope, var)
+
+      scope
     end
 
     def asset
