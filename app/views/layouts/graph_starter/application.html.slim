@@ -1,5 +1,7 @@
 doctype html
 
+- controller = params[:controller].to_sym
+
 html
 
   head
@@ -13,8 +15,6 @@ html
         var current_user = #{current_user.to_json.html_safe}.user;
 
     = javascript_include_tag 'graph_starter/application', 'data-turbolinks-track' => true
-
-    - controller = params[:controller].to_sym
 
     - if ![:users, :groups].include?(controller)
       = javascript_include_tag 'graph_starter/ember_apps/permissions_modal', 'data-turbolinks-track' => true
