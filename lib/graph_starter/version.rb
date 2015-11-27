@@ -1,3 +1,3 @@
 module GraphStarter
-  VERSION = "0.13.11"
+  VERSION = "0.13.12"
 end
