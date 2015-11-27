@@ -6,6 +6,12 @@ module GraphStarter
     def index
       @all_assets = asset_set(:asset, nil)
       @assets = asset_set.to_a
+
+      @category_images = Asset.where(id: @assets.map(&:categories).flatten.map(&:id))
+                          .query_as(:asset)
+                          .match('(asset)-[:HAS_IMAGE]->(image:Image)')
+                          .pluck('asset.uuid', :image)
+      @category_images = Hash[*@category_images.flatten]
     end
 
     def search
