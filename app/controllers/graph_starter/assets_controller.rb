@@ -107,7 +107,7 @@ module GraphStarter
       end
     end
 
-    def asset_set(var = :asset, limit = 50)
+    def asset_set(var = :asset, limit = 30)
       associations = []
       associations << model_class.image_association
       associations += model_class.category_associations
