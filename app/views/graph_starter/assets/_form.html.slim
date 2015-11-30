@@ -19,7 +19,7 @@
 
   - @asset.class.authorized_associations.each do |name, association|
     - target_class = association.target_class
-    - next if !target_class.is_a?(GraphStarter::Asset)
+    - next if !target_class.ancestors.include?(GraphStarter::Asset)
     javascript:
       var current_#{name} = [];
 
