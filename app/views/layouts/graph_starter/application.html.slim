@@ -21,7 +21,7 @@ html
 
     = csrf_meta_tags
 
-  body
+  body class="#{params[:controller].gsub('/', '-')}-controller #{params[:action]}-action"
 
     #loading-spinner.ui.active.centered.large.loader
 

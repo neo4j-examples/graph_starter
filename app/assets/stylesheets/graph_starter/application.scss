@@ -44,3 +44,8 @@
 #main {
   margin-top: 60px;
 }
+
+body.graph_starter-assets-controller.show-action #right-column .items .content {
+  width: 100%;
+  overflow-wrap: break-word;
+}
