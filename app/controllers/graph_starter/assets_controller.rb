@@ -80,7 +80,6 @@ module GraphStarter
       if @asset.persisted?
         redirect_to action: :show, id: @asset.id
       else
-        puts '@asset.errors.messages', @asset.errors.messages.inspect
         flash[:error] = @asset.errors.messages.to_a.map {|pair| pair.join(' ') }.join(' / ')
         redirect_to :back
       end

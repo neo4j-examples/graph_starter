@@ -36,6 +36,10 @@ html
         p.ui.yellow.message
           i.close.icon
           = alert
+      - if flash[:error].present?
+        p.ui.red.message
+          i.close.icon
+          = flash[:error]
 
 
       = yield
