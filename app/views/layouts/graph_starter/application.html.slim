@@ -10,6 +10,8 @@ html
 
     = render partial: 'layouts/graph_starter/twitter_meta_tags'
 
+    = render partial: 'layouts/graph_starter/head_startup_javascript'
+
     - if defined?(current_user)
       javascript:
         var current_user = #{current_user.to_json.html_safe}.user;
