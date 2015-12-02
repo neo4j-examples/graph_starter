@@ -311,15 +311,11 @@ module GraphStarter
       query, associations = if category_associations.size > 0
                               query = all(:asset).query
 
-                              last_associations_var = "categories#{category_associations.size - 1}"
-                              query = category_associations.each_with_index.inject(query) do |query, (association_name, i)|
-                                category_association = self.associations[association_name]
-                                clause = "(asset)#{category_association.arrow_cypher}(category:#{category_association.target_class})"
+                              category_associations
 
-                                query.optional_match(clause).with(:asset, "#{"categories#{i-1} +" if i > 0} collect(category) AS categories#{i}")
-                              end
-                                .with("asset, CASE #{last_associations_var} WHEN [] THEN [null] ELSE #{last_associations_var} END AS #{last_associations_var}")
-                                .unwind(category: last_associations_var)
+                              relationship_types_cypher = category_associations.map {|name| self.associations[name].relationship_type }.join('|:')
+
+                              query = query.optional_match("(asset)-[:#{relationship_types_cypher}]-(category:Asset)")
 
                               [query,
                                [:asset, :category]]
