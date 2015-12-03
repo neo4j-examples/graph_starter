@@ -27,7 +27,7 @@
       label = name.to_s.humanize
 
       - field_name = (association.type == :has_many ? "#{name.to_s.singularize}_ids" : "#{name}_id")
-      - options = target_class.as(:n).pluck(target_class.name_property, target_class.id_property_name).sort_by {|pair| pair.inspect.downcase }
+      - options = target_class.as(:n).pluck(target_class.name_property, target_class.id_property_name).map {|title, _| [GraphStarter::Asset.sanitize_title(title), _] }.sort_by {|pair| pair.inspect.downcase }
 
       - html_options = {class: 'ui fluid search dropdown'}
       - html_options[:multiple] = '' if association.type == :has_many

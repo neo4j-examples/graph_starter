@@ -19,7 +19,7 @@
           .item
             = render partial: 'graph_starter/assets/icon', locals: {asset: category, image: (@category_images || {})[category.id]}
             .content
-              = link_to category.name, asset_path(category)
+              = link_to category.safe_title, asset_path(category)
         - if categories.size > 2
           .item
             i.ellipsis.horizontal.large.icon
