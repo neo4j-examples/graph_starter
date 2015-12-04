@@ -14,7 +14,7 @@ html
 
     - if defined?(current_user)
       javascript:
-        var current_user = #{current_user.to_json.html_safe}.user;
+        var current_user = #{(current_user || {}).to_json.html_safe}.user;
 
     = javascript_include_tag 'graph_starter/application', 'data-turbolinks-track' => true
 
