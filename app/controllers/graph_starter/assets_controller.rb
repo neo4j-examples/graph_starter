@@ -39,6 +39,13 @@ module GraphStarter
     end
 
     def show
+      # For cases where the route picked up more than it should have and we try to constantize something wrong
+      begin
+        model_class
+      rescue NameError
+        return render text: 'Not found', status: :not_found
+      end
+
       @asset = asset
 
       if @asset
