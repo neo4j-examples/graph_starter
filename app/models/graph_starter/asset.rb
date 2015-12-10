@@ -13,12 +13,13 @@ module GraphStarter
     property :summary
 
 
-    def self.inherited(subclass)
-      subclass.property :slug
-      subclass.before_validation :place_slug
-      subclass.validates :slug, presence: true
-      subclass.constraint :slug, type: :unique
-    end
+    # This is doing something strange, commenting out for now...
+    # def self.inherited(subclass)
+    #   subclass.property :slug
+    #   subclass.before_validation :place_slug
+    #   subclass.validates :slug, presence: true
+    #   subclass.constraint :slug, type: :unique
+    # end
 
     def place_slug
       return if self.slug.present?
