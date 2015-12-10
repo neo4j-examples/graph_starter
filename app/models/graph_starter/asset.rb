@@ -95,7 +95,7 @@ module GraphStarter
     def self.enumerable_property(property_name, values)
       fail "values needs to be an Array, was #{values.inspect}" if !values.is_a?(Array)
 
-      validates :status, inclusion: {in: values}
+      validates property_name.to_sym, inclusion: {in: values}
 
       enumerable_property_values[self.name.to_sym] ||= {}
       enumerable_property_values[self.name.to_sym][property_name.to_sym] ||= values
