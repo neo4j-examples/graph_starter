@@ -1,17 +1,18 @@
-.ui.buttons
-  a.ui.labeled.icon.button.right.floated data-authorizable="#{asset.to_json}"
-    | Permissions
+- if asset.persisted?
+  .ui.buttons
+    a.ui.labeled.icon.button.right.floated data-authorizable="#{asset.to_json}"
+      | Permissions
 
-  .or
+    .or
 
-  a.ui.labeled.icon.button.right.floated href="#{graph_starter.edit_asset_path(id: asset)}"
-    i.edit.icon
-    | Edit
+    a.ui.labeled.icon.button.right.floated href="#{graph_starter.edit_asset_path(id: asset)}"
+      i.edit.icon
+      | Edit
 
-.ui.divider
+  .ui.divider
 
-a.ui.labeled.icon.red.button.right.floated href="#{graph_starter.destroy_asset_path(id: asset)}"
-  i.delete.icon
-  | Delete
+  a.ui.labeled.icon.red.button.right.floated href="#{graph_starter.destroy_asset_path(id: asset)}"
+    i.delete.icon
+    | Delete
 
 
