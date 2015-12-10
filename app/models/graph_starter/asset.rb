@@ -1,4 +1,5 @@
 require 'graph_starter/query_authorizer'
+require 'babosa'
 
 module GraphStarter
   class Asset
@@ -10,6 +11,27 @@ module GraphStarter
     include Authorizable
 
     property :summary
+
+
+    def self.inherited(subclass)
+      subclass.property :slug
+      subclass.before_validation :place_slug
+      subclass.validates :slug, presence: true
+      subclass.constraint :slug, type: :unique
+    end
+
+    def place_slug
+      return if self.slug.present?
+
+      name_value = read_attribute(self.class.name_property)
+      self.slug = self.class.unique_slug_from(name_value)
+        name_value.to_slug.normalize.to_s if name_value
+    end
+
+    def self.unique_slug_from(string)
+      base = string.to_slug.normalize.to_s
+    end
+
 
     if GraphStarter.configuration.user_class
       #has_many :in, :creators, type: :CREATED, model_class: GraphStarter.configuration.user_class

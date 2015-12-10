@@ -14,24 +14,24 @@ javascript:
   .ui.grid
     - if asset_presenter.left_sidebar_exists?
       div class="#{left_width} wide column"
-        = render partial: 'dynamic_items', locals: {asset: @asset}
+        = render partial: '/graph_starter/assets/dynamic_items', locals: {asset: @asset}
 
     - if asset_presenter.main_column_exists?
       div class="#{center_width} wide column"
         - if asset_presenter.associations_in_body?
-          = render partial: 'associations', locals: {asset: @asset, as_cards: true}
+          = render partial: '/graph_starter/assets/associations', locals: {asset: @asset, as_cards: true}
         - else
           = render_body(@asset, @model_slug)
 
     div class="#{right_width} wide column" id="right-column"
       - if app_user_is_admin?
-        = render partial: 'admin_buttons', locals: {asset: @asset}
+        = render partial: '/graph_starter/assets/admin_buttons', locals: {asset: @asset}
 
       - if !asset_presenter.left_sidebar_exists?
         .ui.items
           - if !asset_presenter.associations_in_body?
-            = render partial: 'associations', locals: {asset: @asset}
-          = render partial: 'recommendations', locals: {asset: @asset}
+            = render partial: '/graph_starter/assets/associations', locals: {asset: @asset}
+          = render partial: '/graph_starter/assets/recommendations', locals: {asset: @asset}
 
-      = render partial: 'property_items', locals: {asset: @asset}
+      = render partial: '/graph_starter/assets/property_items', locals: {asset: @asset}
 
