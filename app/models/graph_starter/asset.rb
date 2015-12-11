@@ -35,7 +35,7 @@ module GraphStarter
 
 
     if GraphStarter.configuration.user_class
-      #has_many :in, :creators, type: :CREATED, model_class: GraphStarter.configuration.user_class
+      has_many :in, :creators, type: :CREATED, model_class: GraphStarter.configuration.user_class
 
       has_many :in, :viewer_sessions, rel_class: :'GraphStarter::View', model_class: 'GraphStarter::Session'
 
