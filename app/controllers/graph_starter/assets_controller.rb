@@ -138,7 +138,7 @@ module GraphStarter
     end
 
     def asset
-      apply_associations(model_class_scope.where(uuid: params[:id])).to_a[0]
+      apply_associations(model_class_scope.as(:asset).where('asset.uuid = {id} OR asset.slug = {id}', id: params[:id])).to_a[0]
     end
 
     def asset_with_access_level

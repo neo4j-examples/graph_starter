@@ -1,7 +1,7 @@
 module GraphStarter
   module ApplicationHelper
     def asset_path(asset, options = {})
-      graph_starter.asset_path({id: asset, model_slug: asset.class.model_slug}.merge(options))
+      graph_starter.asset_path({id: asset.slug, model_slug: asset.class.model_slug}.merge(options))
     end
 
     def engine_view(&b)
