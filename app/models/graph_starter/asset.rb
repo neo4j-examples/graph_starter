@@ -219,6 +219,27 @@ module GraphStarter
     end
 
 
+    def self.hidden_json_properties(*property_names)
+      if property_names.empty?
+        @hidden_json_properties || []
+      else
+        @hidden_json_properties = property_names.map(&:to_sym)
+      end
+    end
+
+
+    def self.json_methods(*method_names)
+      if method_names.empty?
+        @json_methods || []
+      else
+        @json_methods = method_names.map(&:to_sym)
+      end
+    end
+
+
+    json_methods
+
+
     def rating_level_for(user)
       rating = rating_for(user)
       rating && rating.level
