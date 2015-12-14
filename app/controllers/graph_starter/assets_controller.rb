@@ -38,13 +38,19 @@ module GraphStarter
       render json: {results: results_data}.to_json
     end
 
-    def show
+    def require_model_class
       # For cases where the route picked up more than it should have and we try to constantize something wrong
       begin
         model_class
       rescue NameError
-        return render text: 'Not found', status: :not_found
+        render text: 'Not found', status: :not_found
+        false
       end
+
+    end
+
+    def show
+      return if !require_model_class
 
       @asset = asset
 
@@ -82,6 +88,8 @@ module GraphStarter
     end
 
     def create
+      return if !require_model_class
+
       @asset = model_class.create(params[params[:model_slug].singularize])
 
       if @asset.persisted?
