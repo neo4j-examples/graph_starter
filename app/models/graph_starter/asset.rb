@@ -12,25 +12,29 @@ module GraphStarter
 
     property :summary
 
-
-    # This is doing something strange, commenting out for now...
-    # def self.inherited(subclass)
-    #   subclass.property :slug
-    #   subclass.before_validation :place_slug
-    #   subclass.validates :slug, presence: true
-    #   subclass.constraint :slug, type: :unique
-    # end
+    property :slug
+    before_validation :place_slug
+    validates :slug, presence: true, uniqueness: true
+    constraint :slug, type: :unique
 
     def place_slug
       return if self.slug.present?
 
-      name_value = read_attribute(self.class.name_property)
-      self.slug = self.class.unique_slug_from(name_value)
-        name_value.to_slug.normalize.to_s if name_value
+      self.slug = self.class.unique_slug_from(safe_title)
     end
 
     def self.unique_slug_from(string)
-      base = string.to_slug.normalize.to_s
+      if string.present?
+        slug = string.to_slug.normalize.to_s
+        while where(slug: slug).count > 0
+          if slug.match(/-\d+$/)
+            slug.gsub!(/-(\d+)$/) { "-#{$1.to_i + 1}" }
+          else
+            slug += '-2'
+          end
+        end
+        slug
+      end
     end
 
 
