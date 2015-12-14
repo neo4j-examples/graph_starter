@@ -29,7 +29,7 @@ html
 
     = render partial: 'layouts/graph_starter/menu'
 
-    #main.ui.container
+    #main class="#{@no_ui_container ? '' : 'ui container'}"
       - if notice.present?
         p.ui.green.message
           i.close.icon
