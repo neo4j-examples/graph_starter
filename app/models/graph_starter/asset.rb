@@ -241,8 +241,6 @@ module GraphStarter
     end
 
 
-    json_methods
-
 
     def rating_level_for(user)
       rating = rating_for(user)
