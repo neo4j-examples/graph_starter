@@ -6,6 +6,7 @@ module GraphStarter
     def index
       @all_assets = asset_set(:asset, nil)
       @assets = asset_set.to_a
+      @title = model_class.name.tableize.humanize
 
       @category_images = Asset.where(id: @assets.map(&:categories).flatten.map(&:id))
                           .query_as(:asset)
@@ -53,6 +54,7 @@ module GraphStarter
       return if !require_model_class
 
       @asset = asset
+      @title = @asset.title
 
       if @asset
         View.record_view(@session_node,
@@ -66,6 +68,7 @@ module GraphStarter
 
     def edit
       @asset, @access_level = asset_with_access_level
+      @title = @asset.title.to_s + ' - Edit'
 
       render file: 'public/404.html', status: :not_found, layout: false if !@asset
     end

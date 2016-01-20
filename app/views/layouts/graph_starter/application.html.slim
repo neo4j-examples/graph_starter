@@ -5,7 +5,8 @@ doctype html
 html
 
   head
-    title = @title || Rails.application.class.to_s.split("::").first.tableize.singularize.humanize
+    - app_name = Rails.application.class.to_s.split("::").first.tableize.singularize.humanize
+    title = @title ? "#{@title} - #{app_name}" : app_name
     = stylesheet_link_tag    'graph_starter/application', media: 'all', 'data-turbolinks-track' => true
 
     = render partial: 'layouts/graph_starter/twitter_meta_tags'
