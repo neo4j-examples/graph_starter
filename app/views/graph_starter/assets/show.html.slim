@@ -26,6 +26,7 @@ javascript:
     div class="#{right_width} wide column" id="right-column"
       - if app_user_is_admin?
         = render partial: '/graph_starter/assets/admin_buttons', locals: {asset: @asset}
+        = render partial: '/graph_starter/assets/extra_admin_buttons', locals: {asset: @asset}
 
       - if !asset_presenter.left_sidebar_exists?
         .ui.items
