@@ -119,6 +119,17 @@ module GraphStarter
     end
 
 
+    def self.for_category(node_var, category_slug)
+      string = category_associations.map do |association_name|
+        association = GraphGist.associations[association_name]
+
+        "(#{node_var}#{association.arrow_cypher}(:#{association.target_class.mapped_label_name} {slug: {category_slug}}))"
+      end.join(' OR ')
+
+      all.where(string, category_slug: category_slug)
+    end
+
+
     def self.enumerable_property(property_name, values)
       fail "values needs to be an Array, was #{values.inspect}" if !values.is_a?(Array)
 
@@ -319,13 +330,18 @@ module GraphStarter
         id: id,
         title: title,
         name: title,
+        slug: slug,
         model_slug: self.class.model_slug,
         summary: summary,
-        categories: categories
+        categories: categories # DEPRECATED
       }.tap do |result|
         result[:image_urls] = image_array.map(&:source_url) if image_array
         result[:images] = images.map {|image| image.source.url } if self.class.has_images?
         result[:image] = image.source_url if self.class.has_image? && image
+
+        self.class.category_associations.each do |association_name|
+          result[association_name] = send(association_name)
+        end
       end
 
       options[:root] ? {self.class.model_slug.singularize => data} : data

@@ -131,6 +131,7 @@ module GraphStarter
       associations.compact!
 
       scope = model_class_scope(var)
+      scope = scope.for_category(var, params[:category]) if params[:category].present?
       scope = yield scope if block_given?
 
       scope = scope.limit(limit)
