@@ -341,7 +341,7 @@ module GraphStarter
 
         self.class.category_associations.each do |association_name|
           result[association_name] = send(association_name)
-          result[association_name].uniq! if result[association_name].respond_to?(:to_a)
+          result[association_name].uniq! if result[association_name] && result[association_name].respond_to?(:to_a)
         end
       end
 
