@@ -3,7 +3,8 @@ GraphStarter::Engine.routes.draw do
 
   root 'assets#home'
 
-  resources :categories
+  get 'categories/:slug(.:format)' => 'categories#show'
+
   resources :groups do
     member do
       get :users_to_add
