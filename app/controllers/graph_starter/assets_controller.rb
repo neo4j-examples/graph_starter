@@ -77,10 +77,12 @@ module GraphStarter
       @asset = asset
       @asset.update(params[params[:model_slug].singularize])
 
-      if @asset.class.has_image?
-        @asset.image = Image.create(source: params[:image])
-      elsif @asset.class.has_images?
-        @asset.images << Image.create(source: params[:image])
+      if params[:image].present?
+        if @asset.class.has_image?
+          @asset.image = Image.create(source: params[:image])
+        elsif @asset.class.has_images?
+          @asset.images << Image.create(source: params[:image])
+        end
       end
 
       redirect_to action: :edit
