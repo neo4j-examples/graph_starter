@@ -12,23 +12,26 @@ module GraphStarter
     end
 
     def authorized_pluck(variable, user)
-      authorized_query(variable, user).pluck(variable)
+      authorized_query(variable, [], user).pluck(variable)
     end
 
-    def authorized_query(variables, user)
-      variables = Array(variables)
+    def authorized_query(variable, secondary_variables, user)
+      result_query = query.with(variable, *secondary_variables)
 
-      result_query = query.with(*variables)
-
-      result_query = authorized_user_query(result_query, user, variables)
+      result_query = authorized_user_query(result_query, user, variable, secondary_variables)
 
       # Collapse 2D array of all possible levels into one column of levels
+      result_query.print_cypher
+      puts result_query.pluck('*').inspect
+
       result_query
         .unwind(level_collection: :level_collections)
+        .with('*')
+        .where_not("'denied' IN level_collection")
         .unwind(level: :level_collection).break
-        .with(:level, *variables).where_not(level: nil)
-        .with('collect(level) AS levels', *variables)
-        .with("CASE WHEN 'write' IN levels THEN 'write' ELSE 'read' END AS level", *variables)
+        .with(:level, variable, *secondary_variables).where_not(level: nil)
+        .with('collect(level) AS levels', variable, *secondary_variables)
+        .with("CASE WHEN 'write' IN levels THEN 'write' ELSE 'read' END AS level", variable, *secondary_variables)
     end
 
     private
@@ -56,14 +59,17 @@ module GraphStarter
       end
     end
 
-    def authorized_user_query(query, user, variables, user_variable = :user)
+    def authorized_user_query(query, user, variable, secondary_variables, user_variable = :user)
+      variables = [variable] + secondary_variables
       collect_levels_string = variables.flat_map do |variable|
         filter = scope_filter(variable)
 
         filter_string = filter ? ' AND ' + filter.call(variable) : ''
-        ["CASE WHEN (user.admin OR #{variable}_created_rel IS NOT NULL) THEN 'write' WHEN NOT(#{variable}.private) #{filter_string} THEN 'read' END",
+        secondary = secondary_variables.include?(variable)
+        # First lines gives write or read access based on properties of the asset and wether or not user is admin
+        ["CASE WHEN (user.admin #{secondary ? nil : "OR #{variable}_created_rel IS NOT NULL"}) THEN 'write' WHEN (#{variable} IS NOT NULL AND (#{secondary ? '' : "#{variable}.private IS NULL OR"} #{variable}.private = false)) #{filter_string} THEN 'read' END",
          "#{variable}_direct_access_rel.level",
-         "#{variable}_indirect_can_access_rel.level"]
+         (secondary ? nil : "#{variable}_indirect_can_access_rel.level")]
       end.compact.join(', ')
 
       result_query = variables.flat_map { |v| user_authorization_paths(v, user_variable) }
@@ -72,7 +78,7 @@ module GraphStarter
       end.with('*')
 
       result_query
-        .with("collect([#{collect_levels_string}]) AS level_collections", *variables)
+        .with("REDUCE(a = [], sub_a IN collect([#{collect_levels_string}]) | a + sub_a) AS level_collections", *variables)
     end
 
     def scope_filter(variable)

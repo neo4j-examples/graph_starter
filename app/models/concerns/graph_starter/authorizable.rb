@@ -3,8 +3,8 @@ module GraphStarter
     extend ActiveSupport::Concern
 
     included do
-      property :private, type: ActiveAttr::Typecasting::Boolean, default: false
-      validates :private, inclusion: {in: [true, false]}
+      property :private, type: ActiveAttr::Typecasting::Boolean, default: nil
+      validates :private, inclusion: {in: [true, false, nil]}
 
       if GraphStarter.configuration.user_class
         has_many :in, :allowed_users, rel_class: :'GraphStarter::CanAccess', model_class: GraphStarter.configuration.user_class

@@ -376,7 +376,7 @@ module GraphStarter
     def self.authorized_for(user)
       require 'graph_starter/query_authorizer'
 
-      query, associations = if category_associations.size > 0
+      query, var, sec_var = if category_associations.size > 0
                               query = all(:asset).query
 
                               category_associations
@@ -386,14 +386,14 @@ module GraphStarter
                               query = query.optional_match("(asset)-[:#{relationship_types_cypher}]-(category:Asset)")
 
                               [query,
-                               [:asset, :category]]
+                               :asset, [:category]]
                             else
                               [all(:asset),
                                :asset]
                             end
 
       ::GraphStarter::QueryAuthorizer.new(query, asset: GraphStarter.configuration.scope_filters[self.name.to_sym])
-        .authorized_query(associations, user)
+        .authorized_query(var, sec_var, user)
         .with('DISTINCT asset AS asset, level')
         .break
         .proxy_as(self, :asset)
