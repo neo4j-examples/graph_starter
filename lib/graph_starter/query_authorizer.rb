@@ -20,18 +20,17 @@ module GraphStarter
 
       result_query = authorized_user_query(result_query, user, variable, secondary_variables)
 
-      # Collapse 2D array of all possible levels into one column of levels
-      result_query.print_cypher
-      puts result_query.pluck('*').inspect
+      # result_query.print_cypher
+      # puts result_query.pluck('*').inspect
 
+      list_variables = secondary_variables.map { |variable| "#{variable}_list" }
+
+      # Collapse 2D array of all possible levels into one column of levels
       result_query
-        .unwind(level_collection: :level_collections)
-        .with('*')
         .where_not("'denied' IN level_collection")
         .unwind(level: :level_collection).break
-        .with(:level, variable, *secondary_variables).where_not(level: nil)
-        .with('collect(level) AS levels', variable, *secondary_variables)
-        .with("CASE WHEN 'write' IN levels THEN 'write' ELSE 'read' END AS level", variable, *secondary_variables)
+        .with('collect(level) AS levels', variable, *list_variables)
+        .with("CASE WHEN 'write' IN levels THEN 'write' ELSE 'read' END AS level", variable, *list_variables)
     end
 
     private
@@ -77,8 +76,8 @@ module GraphStarter
         result.optional_match(clause).break
       end.with('*')
 
-      result_query
-        .with("REDUCE(a = [], sub_a IN collect([#{collect_levels_string}]) | a + sub_a) AS level_collections", *variables)
+      list_variables = secondary_variables.map { |variable| "collect(#{variable}) AS #{variable}_list" }
+      result_query.with("FILTER(i IN REDUCE(a = [], sub_a IN collect([#{collect_levels_string}]) | a + sub_a) WHERE i IS NOT NULL) AS level_collection", variable, *list_variables)
     end
 
     def scope_filter(variable)
