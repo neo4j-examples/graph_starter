@@ -418,7 +418,7 @@ module GraphStarter
               .with(:property)
 
       ::GraphStarter::Property # rubocop:disable Lint/Void
-      QueryAuthorizer.new(query).authorized_query(:property, user)
+      QueryAuthorizer.new(query).authorized_query(:property, user, [])
     end
 
     def self.property_name_and_uuid_and_ruby_type_query
