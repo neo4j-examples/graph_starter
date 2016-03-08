@@ -389,7 +389,7 @@ module GraphStarter
                                :asset, [:category]]
                             else
                               [all(:asset),
-                               :asset]
+                               :asset, []]
                             end
 
       ::GraphStarter::QueryAuthorizer.new(query, asset: GraphStarter.configuration.scope_filters[self.name.to_sym])
