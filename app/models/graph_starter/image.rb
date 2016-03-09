@@ -14,7 +14,8 @@ module GraphStarter
     validates_attachment_content_type :source, content_type: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
 
     def source_url
-      source.present? ? source.url : original_url
+      default_style = GraphStarter.configuration.default_image_style
+      source.present? ? source.url(default_style) : original_url
     end
   end
 end

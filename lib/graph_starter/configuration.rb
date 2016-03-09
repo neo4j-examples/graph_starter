@@ -2,7 +2,7 @@ module GraphStarter
   class Configuration
     attr_writer :user_class
 
-    attr_accessor :menu_models, :icon_classes, :scope_filters, :editable_properties
+    attr_accessor :menu_models, :icon_classes, :scope_filters, :editable_properties, :default_image_style
 
     def initialize
       @icon_classes = {}

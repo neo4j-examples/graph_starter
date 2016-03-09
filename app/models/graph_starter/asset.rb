@@ -336,7 +336,7 @@ module GraphStarter
         categories: categories # DEPRECATED
       }.tap do |result|
         result[:image_urls] = image_array.map(&:source_url) if image_array
-        result[:images] = images.map {|image| image.source.url } if self.class.has_images?
+        result[:images] = images.map {|image| image.source_url } if self.class.has_images?
         result[:image] = image.source_url if self.class.has_image? && image
 
         self.class.category_associations.each do |association_name|
