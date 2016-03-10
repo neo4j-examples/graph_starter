@@ -32,6 +32,8 @@ module GraphStarter
     def model_class
       @model_slug = params[:model_slug]
       @model_slug.classify.constantize
+    rescue NameError
+      raise ActionController::RoutingError.new('Not Found')
     end
   end
 end

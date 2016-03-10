@@ -39,20 +39,7 @@ module GraphStarter
       render json: {results: results_data}.to_json
     end
 
-    def require_model_class
-      # For cases where the route picked up more than it should have and we try to constantize something wrong
-      begin
-        model_class
-      rescue NameError
-        render text: 'Not found', status: :not_found
-        false
-      end
-
-    end
-
     def show
-      return if !require_model_class
-
       @asset = asset
       @title = @asset.title
 
@@ -97,8 +84,6 @@ module GraphStarter
     end
 
     def create
-      return if !require_model_class
-
       @asset = model_class.create(params[params[:model_slug].singularize])
 
       if @asset.persisted?
@@ -148,7 +133,9 @@ module GraphStarter
     end
 
     def asset
-      apply_associations(model_class_scope.as(:asset).where('asset.uuid = {id} OR asset.slug = {id}', id: params[:id])).to_a[0]
+      apply_associations(model_class_scope.as(:asset).where('asset.uuid = {id} OR asset.slug = {id}', id: params[:id])).to_a[0].tap do |asset|
+        raise ActionController::RoutingError.new('Asset not found') if asset.blank?
+      end
     end
 
     def asset_with_access_level
