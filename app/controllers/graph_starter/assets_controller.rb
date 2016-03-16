@@ -8,10 +8,12 @@ module GraphStarter
       @assets = asset_set.to_a
       @title = model_class.name.tableize.humanize
 
-      @category_images = Asset.where(id: @assets.map(&:categories).flatten.map(&:id))
+      ids = @assets.map(&:categories).flatten.map(&:id)
+      @category_images = Asset.where(id: ids)
                           .query_as(:asset)
                           .match('(asset)-[:HAS_IMAGE]->(image:Image)')
                           .pluck('asset.uuid', :image)
+
       @category_images = Hash[*@category_images.flatten]
     end
 

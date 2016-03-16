@@ -1,6 +1,6 @@
 - image_url = nil
-- if defined?(image) && image.present?
-  - image_url = image.source.url if defined?(image) && image.present?
+- if defined?(image)
+  - image_url = image.source.url if image.present?
 - elsif (asset.class.has_images? || asset.class.has_image?) && asset.first_image_source_url.present?
   - image_url = asset.first_image_source_url
 
