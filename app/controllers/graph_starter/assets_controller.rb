@@ -169,7 +169,7 @@ module GraphStarter
 
     def apply_associations(scope, var = :asset)
       if associations.present?
-        scope.query_as(var).with(var).proxy_as(model_class, var).with_associations(*associations)
+        scope.with_associations(*associations)
       else
         scope
       end
