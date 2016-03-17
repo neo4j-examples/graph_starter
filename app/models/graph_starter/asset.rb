@@ -190,10 +190,10 @@ module GraphStarter
       self.class.sanitize_title(title)
     end
 
+    SANITIZER = Rails::Html::WhiteListSanitizer.new
+    # Should probably save in the DB?
     def self.sanitize_title(title)
-      sanitizer = Rails::Html::WhiteListSanitizer.new
-
-      sanitizer.sanitize(title, tags: %w(b em i strong)).try(:html_safe)
+      SANITIZER.sanitize(title, tags: %w(b em i strong)).try(:html_safe)
     end
 
 
@@ -366,7 +366,7 @@ module GraphStarter
     end
 
     def self.model_slug
-      name.tableize
+      @model_slug ||= name.tableize
     end
 
     def self.properties

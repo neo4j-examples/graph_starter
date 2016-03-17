@@ -17,6 +17,6 @@
                 - Array(result).each do |object|
                   .item
                     .content
-                      = render partial: '/graph_starter/assets/icon', locals: {asset: object}
+                      = asset_icon object
                       = link_to object.title, asset_path(object)
 

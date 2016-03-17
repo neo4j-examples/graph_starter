@@ -1,7 +1,9 @@
 module GraphStarter
   module ApplicationHelper
-    def asset_path(asset, options = {})
-      graph_starter.asset_path({id: asset.slug, model_slug: asset.class.model_slug}.merge(options))
+    def asset_path(asset)
+      # graph_starter.asset_path({id: asset.slug, model_slug: asset.class.model_slug}.merge(options))
+      # Switched to string for performance
+      "/#{asset.class.model_slug}/#{asset.slug}"
     end
 
     def engine_view(&b)
@@ -30,6 +32,21 @@ module GraphStarter
 
     def missing_image_tag
       @missing_image_tag ||= image_tag 'missing.png'
+    end
+
+    # I know, right?
+    def asset_icon(asset, image = (image_unspecified = true; nil))
+      image_url = if !image_unspecified
+                    image.source.url if image.present?
+                  elsif (asset.class.has_images? || asset.class.has_image?) && asset.first_image_source_url.present?
+                    asset.first_image_source_url
+                  end
+
+      if image_url
+        image_tag image_url, class: 'ui avatar image'
+      else
+        content_tag :i, '', class: [asset.class.icon_class || 'folder', 'large', 'icon']
+      end
     end
   end
 end

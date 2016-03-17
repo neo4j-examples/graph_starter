@@ -7,5 +7,4 @@
   - properties = model_class.properties
 
   .ui.link.cards
-    - asset_group.each do |asset|
-      = render partial: 'graph_starter/assets/card', locals: {asset: asset}
+    = render partial: 'graph_starter/assets/card', collection: asset_group, as: :asset
