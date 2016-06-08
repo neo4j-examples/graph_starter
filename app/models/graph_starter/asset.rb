@@ -309,11 +309,11 @@ module GraphStarter
       user_label = user_class.mapped_label_name
 
       query_as(:source)
-        .match('source-[:HAS_CATEGORY]->(category:Category)<-[:HAS_CATEGORY]-(asset:Asset)')
+        .match('(source)-[:HAS_CATEGORY]->(category:Category)<-[:HAS_CATEGORY]-(asset:Asset)')
         .break
-        .optional_match("source<-[:CREATED]-(creator:#{user_label})-[:CREATED]->asset")
+        .optional_match("(source)<-[:CREATED]-(creator:#{user_label})-[:CREATED]->(asset)")
         .break
-        .optional_match("source<-[:VIEWED]-(viewer:#{user_label})-[:VIEWED]->asset")
+        .optional_match("(source)<-[:VIEWED]-(viewer:#{user_label})-[:VIEWED]->(asset)")
         .limit(5)
         .order('score DESC')
         .pluck(
@@ -412,7 +412,7 @@ module GraphStarter
               .merge(model: {Model: {name: name}})
               .on_create_set(model: {private: false})
               .break
-              .merge('model-[:HAS_PROPERTY]->(property:Property {name: property_name})')
+              .merge('(model)-[:HAS_PROPERTY]->(property:Property {name: property_name})')
               .on_create_set(property: {private: false})
               .on_create_set('property.uuid = uuid, property.ruby_type = ruby_type')
               .with(:property)

@@ -89,9 +89,9 @@ module GraphStarter
     end
 
     def user_authorization_paths(variable, user_variable = :user)
-      ["#{variable}<-[#{variable}_created_rel:CREATED]-#{user_variable}",
-       "#{variable}<-[#{variable}_direct_access_rel:CAN_ACCESS]-#{user_variable}",
-       "#{variable}<-[#{variable}_indirect_can_access_rel:CAN_ACCESS]-(:Group)<-[:HAS_SUBGROUP*0..5]-(:Group)<-[:BELONGS_TO]-#{user_variable}"]
+      ["(#{variable})<-[#{variable}_created_rel:CREATED]-(#{user_variable})",
+       "(#{variable})<-[#{variable}_direct_access_rel:CAN_ACCESS]-(#{user_variable})",
+       "(#{variable})<-[#{variable}_indirect_can_access_rel:CAN_ACCESS]-(:Group)<-[:HAS_SUBGROUP*0..5]-(:Group)<-[:BELONGS_TO]-(#{user_variable})"]
     end
   end
 end
