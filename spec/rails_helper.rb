@@ -25,7 +25,7 @@ require 'factory_girl_rails'
 
 module ClearDbHelpers
   def clear_db
-    Neo4j::Session.current.query('MATCH n OPTIONAL MATCH n-[r]-() DELETE n, r')
+    Neo4j::ActiveBase.current_session.query('MATCH (n) DETACH DELETE n')
   end
 end
 

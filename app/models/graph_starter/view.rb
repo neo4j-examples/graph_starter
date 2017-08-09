@@ -50,7 +50,7 @@ module GraphStarter
                     view_rel.count = view_rel.count + 1
                  CYPHER
 
-      Neo4j::Session.current.query(query,
+      Neo4j::ActiveBase.current_session.query(query,
                                    session_id: session.neo_id,
                                    target_id: target.neo_id,
                                    browser_string: properties[:browser_string],
