@@ -428,7 +428,7 @@ module GraphStarter
         [property, SecureRandom.uuid, type]
       end
 
-      Neo4j::ActiveBase.current_session.query
+      Neo4j::ActiveBase.new_query
         .with('{array} AS array')
         .unwind('array AS row')
         .params(array: properties_and_uuids_and_ruby_types)
