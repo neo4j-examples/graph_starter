@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency "semantic-ui-sass", "~> 2.1.3.0"
   s.add_dependency "slim-rails", "~> 3.0.1"
   s.add_dependency "paperclip", "~> 5.2.1"
-  s.add_dependency "neo4jrb-paperclip", "0.0.5"
+  s.add_dependency "neo4jrb-paperclip", ">= 0.0.4"
   s.add_dependency 'babosa', '1.0.2'
 
   s.add_development_dependency 'rspec-rails'
